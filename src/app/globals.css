@@ -7,9 +7,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-display);
+  --color-jh-light: var(--jh-light);
+  --color-jh-bright: var(--jh-bright);
+  --color-jh-deep: var(--jh-deep);
+  --color-jh-navy: var(--jh-navy);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -49,38 +53,45 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Jana Human Hair: light blue, bright blue and white, with navy for text
+     and a deeper blue for links (bright blue is too light for small text). */
+  --jh-light: #e9f1fa;
+  --jh-bright: #00abe4;
+  --jh-deep: #0077a8;
+  --jh-navy: #0b2545;
+
+  --background: var(--jh-light);
+  --foreground: var(--jh-navy);
+  --card: #ffffff;
+  --card-foreground: var(--jh-navy);
+  --popover: #ffffff;
+  --popover-foreground: var(--jh-navy);
+  --primary: var(--jh-bright);
+  --primary-foreground: var(--jh-navy);
+  --secondary: #ffffff;
+  --secondary-foreground: var(--jh-navy);
+  --muted: #dbe8f5;
+  --muted-foreground: #35506b;
+  --accent: #d6ecf8;
+  --accent-foreground: var(--jh-navy);
+  --destructive: #c0262d;
+  --border: #cddff0;
+  --input: #b9d0e6;
+  --ring: var(--jh-bright);
+  --chart-1: var(--jh-bright);
+  --chart-2: var(--jh-deep);
+  --chart-3: var(--jh-navy);
+  --chart-4: #7fd3f1;
+  --chart-5: #35506b;
+  --radius: 0.875rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: var(--jh-navy);
+  --sidebar-primary: var(--jh-bright);
+  --sidebar-primary-foreground: var(--jh-navy);
+  --sidebar-accent: var(--jh-light);
+  --sidebar-accent-foreground: var(--jh-navy);
+  --sidebar-border: #cddff0;
+  --sidebar-ring: var(--jh-bright);
 }
 
 .dark {
@@ -126,5 +137,21 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* Headings in the display serif. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    @apply font-heading tracking-tight text-balance;
+  }
+}
+
+/* Smooth in-page scrolling, unless the visitor prefers less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 }

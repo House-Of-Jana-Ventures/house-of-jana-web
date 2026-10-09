@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Jana Human Hair website
 
-## Getting Started
+The new website for **Jana Human Hair**, a unit of House of Jana Ventures Pvt. Ltd., replacing the WordPress site at janahumanhair.com. Built with Next.js 16, Tailwind CSS 4, shadcn/ui and React Bits.
 
-First, run the development server:
+**Status:** phase J1 built (all four pages, the contact button and form, search-engine basics). Plan, status and QC guide: [`dev/`](dev/).
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp env.example .env.local   # Windows: copy env.example .env.local
+npm run dev                 # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Settings (`.env.local`)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Setting              | Meaning                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `GMAIL_USER`         | The Gmail account that sends the contact-form emails. `jweindia@gmail.com`.                                   |
+| `GMAIL_APP_PASSWORD` | A Google app password for that account. Without it, development only logs enquiries; production refuses. |
+| `CONTACT_TO`         | Where enquiries go. Default `jweindia@gmail.com`.                                                             |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Command            | What it does                                     |
+| ------------------ | ------------------------------------------------ |
+| `npm run dev`      | Development server                               |
+| `npm run build`    | Production build                                 |
+| `npm run check`    | Typecheck, lint and unit tests                   |
+| `npm test`         | Unit tests (Vitest)                              |
+| `npm run test:e2e` | Production build, then browser tests (Playwright, with an accessibility scan) |
 
-To learn more about Next.js, take a look at the following resources:
+## How it's put together
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Pages** (`src/app/`): Home, About, Products, Community Initiatives. There's no Contact page: the round button at the bottom right of every page (and every "Contact us" link) opens a small contact form. Old WordPress addresses redirect (`next.config.ts`); `/contact` opens the form.
+- **Text** lives in `src/content/` (one file per page, plus `site.ts` for the contact details), so wording changes don't touch the layout.
+- **Contact form:**
+  - `src/components/contact/` (button, panel, form)
+  - `src/app/actions/contact.ts` (a server action that checks the message and sends it from Gmail)
+  - `src/lib/contact-email.ts` (the two emails: the enquiry with all the details to you, and a thank-you with a copy to the visitor)
+  - `src/lib/contact-rules.ts` (the checks, shared with the form)
+  - spam protection: a hidden field bots fill in, and a limit of 5 messages per visitor in 10 minutes
+- **Colours** (`src/app/globals.css`): light blue `#E9F1FA`, bright blue `#00ABE4` and white, with navy `#0B2545` for text and `#0077A8` for links (bright blue is too light for small text).
+- **Animations:** React Bits (`src/components/reactbits/`) for the hero heading, scroll fade-ins and counting numbers; Motion for the testimonials. All switch off for visitors who prefer reduced motion, and the content still shows without JavaScript.
+- **Images** (`public/images/`): from the old site, converted to WebP and resized.

@@ -1,0 +1,117 @@
+"use client";
+
+import { Menu } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ContactButton } from "@/components/contact/contact-button";
+import { useContact } from "@/components/contact/contact-context";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { nav } from "@/content/site";
+import { cn } from "@/lib/utils";
+
+/** The sticky header: logo, menu (a slide-out panel on phones) and Contact us. */
+export function Header() {
+  const pathname = usePathname();
+  const { openContact } = useContact();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // A soft shadow once the page has scrolled.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const isCurrent = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+
+  return (
+    <header
+      className={cn(
+        "sticky top-0 z-30 border-b border-transparent bg-white/85 backdrop-blur-md transition-shadow duration-300",
+        scrolled && "border-border shadow-sm shadow-jh-navy/5",
+      )}
+    >
+      <div className="mx-auto flex h-18 max-w-6xl items-center gap-6 px-4 sm:px-6">
+        <Link
+          href="/"
+          className="shrink-0 rounded-md focus-visible:outline-2 focus-visible:outline-jh-bright"
+        >
+          <Image
+            src="/images/logo.png"
+            alt="Jana Human Hair home"
+            width={317}
+            height={140}
+            priority
+            className="h-12 w-auto"
+          />
+        </Link>
+
+        <nav aria-label="Main" className="ml-auto hidden md:block">
+          <ul className="flex items-center gap-1">
+            {nav.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={isCurrent(item.href) ? "page" : undefined}
+                  className={cn(
+                    "relative rounded-full px-3.5 py-2 text-sm font-medium text-jh-navy/80 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright",
+                    "after:absolute after:inset-x-3.5 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-jh-bright after:transition-transform after:duration-300 hover:after:scale-x-100",
+                    isCurrent(item.href) && "text-jh-navy after:scale-x-100",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <ContactButton className="hidden md:inline-flex">Contact us</ContactButton>
+
+        <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+          <SheetTrigger
+            aria-label="Open menu"
+            className="ml-auto flex size-11 items-center justify-center rounded-full text-jh-navy hover:bg-muted focus-visible:outline-2 focus-visible:outline-jh-bright md:hidden"
+          >
+            <Menu aria-hidden className="size-6" />
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[85%] bg-white p-6">
+            <SheetTitle className="font-heading text-2xl">Menu</SheetTitle>
+            <nav aria-label="Main">
+              <ul className="mt-2 flex flex-col gap-1">
+                {nav.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={() => setMenuOpen(false)}
+                      aria-current={isCurrent(item.href) ? "page" : undefined}
+                      className={cn(
+                        "block rounded-xl px-4 py-3 text-base font-medium hover:bg-jh-light",
+                        isCurrent(item.href) && "bg-jh-light text-jh-deep",
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false);
+                openContact();
+              }}
+              className="mt-2 h-12 rounded-full bg-jh-bright text-base font-semibold text-jh-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jh-navy"
+            >
+              Contact us
+            </button>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </header>
+  );
+}
