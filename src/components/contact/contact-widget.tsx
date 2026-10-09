@@ -1,8 +1,8 @@
 "use client";
 
 import { MessageCircle, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -20,28 +20,42 @@ import { ContactForm } from "./contact-form";
  * opens: a panel above the button on computers, a sheet from the bottom on
  * phones. Any "Contact" link on the site opens the same form, and `?contact`
  * in the address opens it on arrival (old /contact links redirect there).
- * It also opens by itself 10 seconds after a visitor arrives, and again 10
+ * It also opens by itself: a moment after the home page loads (arriving or
+ * reloading), 10 seconds after arriving on any other page, and again 10
  * seconds after each time it's closed, until they send a message.
  */
 const AUTO_OPEN_MS = 10_000;
+/** On the home page, just long enough for the page to appear first. */
+const HOME_OPEN_MS = 1_000;
 
 export function ContactWidget() {
   const { open, topic, openContact, setOpen } = useContact();
   // A fresh form each time it opens (and after "Thank you").
   const [round, setRound] = useState(0);
   const params = useSearchParams();
+  const pathname = usePathname();
+  // The page the visitor landed on (this component lives for the whole visit).
+  const landedOn = useRef(pathname);
 
   useEffect(() => {
     if (params.has("contact")) openContact();
   }, [params, openContact]);
 
+  // Whether it has opened at all since the page loaded.
+  const opened = useRef(false);
+
   // Whenever the form is closed (and on arrival), open it again after 10 seconds,
   // unless the visitor has already sent a message during this visit.
   useEffect(() => {
-    if (open) return;
+    if (open) {
+      opened.current = true;
+      return;
+    }
+    // Landing on (or reloading) the home page: open almost at once, the first time only.
+    const delay = !opened.current && landedOn.current === "/" ? HOME_OPEN_MS : AUTO_OPEN_MS;
     const timer = window.setTimeout(() => {
       if (!sentThisVisit()) openContact();
-    }, AUTO_OPEN_MS);
+    }, delay);
     return () => window.clearTimeout(timer);
   }, [open, openContact]);
 

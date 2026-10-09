@@ -1,6 +1,6 @@
 'use client';
 
-import { useInView, useMotionValue, useSpring } from 'motion/react';
+import { animate, useInView } from 'motion/react';
 import { useCallback, useEffect, useRef } from 'react';
 
 interface CountUpProps {
@@ -29,16 +29,6 @@ export default function CountUp({
   onEnd
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const motionValue = useMotionValue(direction === 'down' ? to : from);
-
-  const damping = 20 + 40 * (1 / duration);
-  const stiffness = 100 * (1 / duration);
-
-  const springValue = useSpring(motionValue, {
-    damping,
-    stiffness
-  });
-
   const isInView = useInView(ref, { once: true, margin: '0px' });
 
   const getDecimalPlaces = (num: number): number => {
@@ -71,47 +61,34 @@ export default function CountUp({
     [maxDecimals, separator]
   );
 
+  // Changed from React Bits' original (a spring): a timed animation that always
+  // ends exactly on the number, and that starts again whenever the effect runs
+  // again. Next.js keeps a page you leave alive but paused; with the spring,
+  // coming back to it left the numbers stuck at 0.
   useEffect(() => {
-    if (ref.current) {
-      ref.current.textContent = formatValue(direction === 'down' ? to : from);
+    const el = ref.current;
+    if (!el) return;
+    const start = direction === 'down' ? to : from;
+    const end = direction === 'down' ? from : to;
+    if (!isInView || !startWhen) {
+      el.textContent = formatValue(start);
+      return;
     }
-  }, [from, to, direction, formatValue]);
-
-  useEffect(() => {
-    if (isInView && startWhen) {
-      if (typeof onStart === 'function') {
-        onStart();
-      }
-
-      const timeoutId = setTimeout(() => {
-        motionValue.set(direction === 'down' ? from : to);
-      }, delay * 1000);
-
-      const durationTimeoutId = setTimeout(
-        () => {
-          if (typeof onEnd === 'function') {
-            onEnd();
-          }
-        },
-        delay * 1000 + duration * 1000
-      );
-
-      return () => {
-        clearTimeout(timeoutId);
-        clearTimeout(durationTimeoutId);
-      };
-    }
-  }, [isInView, startWhen, motionValue, direction, from, to, delay, onStart, onEnd, duration]);
-
-  useEffect(() => {
-    const unsubscribe = springValue.on('change', (latest: number) => {
-      if (ref.current) {
-        ref.current.textContent = formatValue(latest);
+    onStart?.();
+    const controls = animate(start, end, {
+      delay,
+      duration,
+      ease: [0.16, 1, 0.3, 1],
+      onUpdate: (latest) => {
+        el.textContent = formatValue(latest);
+      },
+      onComplete: () => {
+        el.textContent = formatValue(end);
+        onEnd?.();
       }
     });
-
-    return () => unsubscribe();
-  }, [springValue, formatValue]);
+    return () => controls.stop();
+  }, [isInView, startWhen, direction, from, to, delay, duration, formatValue, onStart, onEnd]);
 
   return <span className={className} ref={ref} />;
 }

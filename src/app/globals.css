@@ -57,7 +57,7 @@
      and a deeper blue for links (bright blue is too light for small text). */
   --jh-light: #e9f1fa;
   --jh-bright: #00abe4;
-  --jh-deep: #0077a8;
+  --jh-deep: #006a96; /* 5.3:1 on the light blue, so small text reads easily */
   --jh-navy: #0b2545;
 
   --background: var(--jh-light);

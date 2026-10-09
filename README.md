@@ -40,6 +40,6 @@ npm run dev                 # http://localhost:3000
   - `src/lib/contact-email.ts` (the two emails: the enquiry with all the details to you, and a thank-you with a copy to the visitor)
   - `src/lib/contact-rules.ts` (the checks, shared with the form)
   - spam protection: a hidden field bots fill in, and a limit of 5 messages per visitor in 10 minutes
-- **Colours** (`src/app/globals.css`): light blue `#E9F1FA`, bright blue `#00ABE4` and white, with navy `#0B2545` for text and `#0077A8` for links (bright blue is too light for small text).
+- **Colours** (`src/app/globals.css`): light blue `#E9F1FA`, bright blue `#00ABE4` and white, with navy `#0B2545` for text and `#006A96` for links and small labels (bright blue is too light for small text).
 - **Animations:** React Bits (`src/components/reactbits/`) for the hero heading, scroll fade-ins and counting numbers; Motion for the testimonials. All switch off for visitors who prefer reduced motion, and the content still shows without JavaScript.
 - **Images** (`public/images/`): from the old site, converted to WebP and resized.

@@ -20,10 +20,10 @@ test.beforeEach(async ({ page }, testInfo) => {
 async function scrollThrough(page: Page) {
   await page.evaluate(async () => {
     for (let y = 0; y < document.body.scrollHeight; y += 400) {
-      window.scrollTo(0, y);
+      window.scrollTo({ top: y, behavior: "instant" });
       await new Promise((r) => setTimeout(r, 60));
     }
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: "instant" });
   });
   await page.waitForTimeout(900);
 }
@@ -234,4 +234,52 @@ test("required fields are starred, and WhatsApp is offered as another way", asyn
   const whatsapp = form.getByRole("link", { name: /Chat with us on WhatsApp/ });
   await expect(whatsapp).toHaveAttribute("href", "https://wa.me/message/5EXU5MQ2N5Y3B1");
   await expect(whatsapp).toHaveAttribute("target", "_blank");
+});
+
+test("numbers and sections still show after visiting another page and coming back", async ({ page }) => {
+  await page.goto("/");
+  const stats = page.locator("main dd span[aria-hidden]");
+  await expect(stats.first()).toHaveText("50+", { timeout: 5_000 });
+  const nav = page.getByRole("navigation", { name: "Main" }).first();
+  for (const other of ["About", "Products"]) {
+    await nav.getByRole("link", { name: other }).click();
+    await expect(page.getByRole("heading", { level: 1 }).filter({ visible: true })).toBeVisible();
+    await nav.getByRole("link", { name: "Home" }).click();
+    await expect(stats.filter({ visible: true }).first()).toHaveText("50+", { timeout: 5_000 });
+    await expect(stats.filter({ visible: true }).nth(1)).toHaveText("4");
+  }
+  // Every section on the page appears as it's scrolled to.
+  await scrollThrough(page);
+  const invisible = await page.evaluate(
+    () =>
+      [...document.querySelectorAll<HTMLElement>("[data-reveal]")].filter(
+        (e) => e.getClientRects().length > 0 && getComputedStyle(e).opacity === "0",
+      ).length,
+  );
+  expect(invisible).toBe(0);
+});
+
+test("landing on the home page, the form pops up at once, then every 10 seconds after closing", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  await page.clock.runFor(1_500);
+  await expect(dialog(page)).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await expect(dialog(page)).toBeHidden();
+  await page.clock.runFor(9_000);
+  await expect(dialog(page)).toBeHidden();
+  await page.clock.runFor(1_500);
+  await expect(dialog(page)).toBeVisible();
+
+  // Reloading the home page brings it up at once again.
+  await page.reload();
+  let waited = 0;
+  await expect(async () => {
+    await page.clock.runFor(250);
+    waited += 250;
+    await expect(dialog(page)).toBeVisible({ timeout: 100 });
+  }).toPass({ timeout: 15_000 });
+  expect(waited).toBeLessThanOrEqual(3_000);
 });
