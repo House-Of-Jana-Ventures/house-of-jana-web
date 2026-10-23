@@ -1,9 +1,13 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { Reveal } from "./reveal";
+import { DrawLine, Reveal } from "./reveal";
 
-/** A section's small label, heading and intro, with a thin bright-blue rule. */
+/**
+ * A section's small label, heading and intro, with a thin bright-blue rule.
+ * They come in one after another: the label, the heading, then the line draws
+ * itself.
+ */
 export function SectionHeading({
   id,
   eyebrow,
@@ -18,19 +22,24 @@ export function SectionHeading({
   align?: "center" | "left";
 }) {
   return (
-    <Reveal className={cn("max-w-2xl", align === "center" ? "mx-auto text-center" : "")}>
+    <div className={cn("max-w-2xl", align === "center" ? "mx-auto text-center" : "")}>
       {eyebrow ? (
-        <p className="text-xs font-semibold tracking-[0.25em] text-jh-deep uppercase">{eyebrow}</p>
+        <Reveal>
+          <p className="text-xs font-semibold tracking-[0.25em] text-jh-deep uppercase">{eyebrow}</p>
+        </Reveal>
       ) : null}
-      <h2 id={id} className="mt-3 text-3xl font-semibold sm:text-4xl md:text-[2.75rem] md:leading-tight">
-        {title}
-      </h2>
-      <span
-        aria-hidden
-        className={cn("mt-5 block h-1 w-14 rounded-full bg-jh-bright", align === "center" && "mx-auto")}
-      />
-      {intro ? <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">{intro}</p> : null}
-    </Reveal>
+      <Reveal delay={0.08}>
+        <h2 id={id} className="mt-3 text-3xl font-semibold sm:text-4xl md:text-[2.75rem] md:leading-tight">
+          {title}
+        </h2>
+      </Reveal>
+      <DrawLine center={align === "center"} />
+      {intro ? (
+        <Reveal delay={0.16}>
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">{intro}</p>
+        </Reveal>
+      ) : null}
+    </div>
   );
 }
 
@@ -48,7 +57,15 @@ export function PageBanner({
 }) {
   return (
     <section className="relative isolate overflow-hidden">
-      <Image src={image} alt="" fill priority sizes="100vw" className="-z-20 object-cover" />
+      {/* The photo slowly moves closer (a soft "Ken Burns"), unless less motion is preferred. */}
+      <Image
+        src={image}
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="-z-20 object-cover motion-safe:animate-[jh-zoom_24s_ease-out_forwards]"
+      />
       {/* Only a soft fade at the very bottom, where the banner meets the page. */}
       <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-16 bg-gradient-to-b from-transparent to-jh-light" />
       <div className="mx-auto max-w-6xl px-4 py-14 text-center sm:px-6 sm:py-24">

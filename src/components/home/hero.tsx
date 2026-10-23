@@ -19,7 +19,7 @@ export function Hero() {
         fill
         priority
         sizes="100vw"
-        className="-z-20 object-cover"
+        className="-z-20 object-cover motion-safe:animate-[jh-zoom_24s_ease-out_forwards]"
       />
       {/* The photo stays clear; the words sit on a soft frosted panel so they read easily. */}
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-20 lg:py-24">

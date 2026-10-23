@@ -2,11 +2,15 @@
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 
+/** Who opened the form: the visitor (a button or link), or the timer by itself. */
+export type OpenedBy = "visitor" | "timer";
+
 interface ContactContextValue {
   open: boolean;
   /** What the enquiry is about (e.g. a product), pre-filled in the message. */
   topic: string | null;
-  openContact: (topic?: string) => void;
+  openedBy: OpenedBy;
+  openContact: (topic?: string, by?: OpenedBy) => void;
   setOpen: (open: boolean) => void;
 }
 
@@ -35,11 +39,16 @@ const ContactContext = createContext<ContactContextValue | null>(null);
 export function ContactProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [topic, setTopic] = useState<string | null>(null);
-  const openContact = useCallback((next?: string) => {
+  const [openedBy, setOpenedBy] = useState<OpenedBy>("visitor");
+  const openContact = useCallback((next?: string, by: OpenedBy = "visitor") => {
     setTopic(next ?? null);
+    setOpenedBy(by);
     setOpen(true);
   }, []);
-  const value = useMemo(() => ({ open, topic, openContact, setOpen }), [open, topic, openContact]);
+  const value = useMemo(
+    () => ({ open, topic, openedBy, openContact, setOpen }),
+    [open, topic, openedBy, openContact],
+  );
   return <ContactContext.Provider value={value}>{children}</ContactContext.Provider>;
 }
 

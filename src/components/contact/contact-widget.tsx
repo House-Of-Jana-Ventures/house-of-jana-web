@@ -11,53 +11,58 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { site } from "@/content/site";
+import { popupDelay, shouldPopUp } from "@/lib/contact-popup";
 import { cn } from "@/lib/utils";
 import { sentThisVisit, useContact } from "./contact-context";
 import { ContactForm } from "./contact-form";
 
 /**
  * The round contact button, bottom right of every page, and the small form it
- * opens: a panel above the button on computers, a sheet from the bottom on
- * phones. Any "Contact" link on the site opens the same form, and `?contact`
- * in the address opens it on arrival (old /contact links redirect there).
- * It also opens by itself: a moment after the home page loads (arriving or
- * reloading), 10 seconds after arriving on any other page, and again 10
- * seconds after each time it's closed, until they send a message.
+ * opens: a panel above the button on computers, a short sheet from the bottom
+ * on phones. Any "Contact" link on the site opens the same form, and
+ * `?contact` in the address opens it on arrival (old /contact links redirect
+ * there).
+ *
+ * It also opens by itself: a moment after landing on the home page, 15
+ * seconds after arriving on any other page, and again 15 seconds
+ * after each time it's closed, until a message is sent. It never blocks the
+ * page: no dimming, no scroll lock, the page's links and buttons keep
+ * working, and clicking the page doesn't close it (only × or Escape do).
+ * When the timer opens it, focus stays where the visitor was.
  */
-const AUTO_OPEN_MS = 10_000;
-/** On the home page, just long enough for the page to appear first. */
-const HOME_OPEN_MS = 1_000;
-
 export function ContactWidget() {
-  const { open, topic, openContact, setOpen } = useContact();
+  const { open, topic, openedBy, openContact, setOpen } = useContact();
   // A fresh form each time it opens (and after "Thank you").
   const [round, setRound] = useState(0);
+  // Until the form has been seen once, the round button breathes gently.
+  const [seen, setSeen] = useState(false);
   const params = useSearchParams();
+
   const pathname = usePathname();
   // The page the visitor landed on (this component lives for the whole visit).
   const landedOn = useRef(pathname);
+  // Whether the form has opened at all since the page loaded.
+  const openedBefore = useRef(false);
 
   useEffect(() => {
     if (params.has("contact")) openContact();
   }, [params, openContact]);
 
-  // Whether it has opened at all since the page loaded.
-  const opened = useRef(false);
-
-  // Whenever the form is closed (and on arrival), open it again after 10 seconds,
-  // unless the visitor has already sent a message during this visit.
+  // Whenever the form is closed (and on arrival), open it again after a while:
+  // at once on landing on the home page, otherwise 15 seconds.
   useEffect(() => {
     if (open) {
-      opened.current = true;
+      openedBefore.current = true;
       return;
     }
-    // Landing on (or reloading) the home page: open almost at once, the first time only.
-    const delay = !opened.current && landedOn.current === "/" ? HOME_OPEN_MS : AUTO_OPEN_MS;
+    const delay = popupDelay({ landedOn: landedOn.current, openedBefore: openedBefore.current });
     const timer = window.setTimeout(() => {
-      if (!sentThisVisit()) openContact();
+      if (shouldPopUp({ open: false, sent: sentThisVisit() })) openContact(undefined, "timer");
     }, delay);
     return () => window.clearTimeout(timer);
   }, [open, openContact]);
+
+  const byTimer = openedBy === "timer";
 
   return (
     <>
@@ -78,27 +83,39 @@ export function ContactWidget() {
         >
           Contact us
         </span>
-        {/* A soft ping, once, so people notice it. */}
-        <span
-          aria-hidden
-          className="absolute inset-0 -z-10 rounded-full bg-jh-bright/60 motion-safe:animate-[ping_1.6s_ease-out_1_1.2s]"
-        />
+        {/* A soft ring that breathes every few seconds, until the form has been seen. */}
+        {!seen ? (
+          <span
+            aria-hidden
+            className="absolute inset-0 -z-10 rounded-full bg-jh-bright/50 motion-safe:animate-[jh-breathe_3.2s_ease-out_1.2s_infinite]"
+          />
+        ) : null}
       </button>
 
       <Dialog
         open={open}
+        modal={false}
+        disablePointerDismissal
         onOpenChange={(next) => {
           setOpen(next);
           if (!next) setRound((r) => r + 1);
         }}
+        onOpenChangeComplete={(isOpen) => {
+          if (isOpen) setSeen(true);
+        }}
       >
         <DialogContent
+          overlay={false}
           showCloseButton={false}
+          // Opened by the timer: don't pull focus away from what the visitor is doing.
+          initialFocus={!byTimer}
+          finalFocus={!byTimer}
           className={cn(
-            // Phones: a sheet from the bottom.
-            "top-auto bottom-0 left-0 max-h-[92dvh] w-full max-w-full translate-x-0 translate-y-0 gap-4 overflow-y-auto rounded-t-3xl rounded-b-none p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] data-open:slide-in-from-bottom-8 data-open:zoom-in-100",
+            // Phones: a short sheet from the bottom, so the page above stays in view and scrolls.
+            "top-auto bottom-0 left-0 max-h-[62dvh] w-full max-w-full translate-x-0 translate-y-0 gap-4 overflow-y-auto overscroll-contain rounded-t-3xl rounded-b-none p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-[0_-12px_40px_-12px] shadow-jh-navy/30 data-open:slide-in-from-bottom-8 data-open:zoom-in-100",
             // Computers: a panel above the button.
-            "sm:top-auto sm:right-6 sm:bottom-24 sm:left-auto sm:max-w-md sm:rounded-3xl sm:p-6 sm:data-open:slide-in-from-bottom-4",
+            "sm:top-auto sm:right-6 sm:bottom-24 sm:left-auto sm:max-h-[calc(100dvh-8rem)] sm:max-w-md sm:rounded-3xl sm:p-6 sm:shadow-2xl sm:data-open:slide-in-from-bottom-4",
+            "data-open:duration-300 data-closed:duration-200",
           )}
         >
           <DialogHeader className="pr-10">

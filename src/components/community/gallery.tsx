@@ -30,7 +30,7 @@ export function Gallery({ photos }: { photos: Photo[] }) {
       <ul className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
         {photos.map((photo, i) => (
           <li key={photo.src}>
-            <Reveal delay={0.03 * (i % 4)}>
+            <Reveal zoom delay={0.06 * (i % 4)}>
               <button
                 type="button"
                 onClick={() => setIndex(i)}
@@ -42,7 +42,7 @@ export function Gallery({ photos }: { photos: Photo[] }) {
                   alt={photo.alt}
                   fill
                   sizes="(min-width: 1024px) 22vw, (min-width: 640px) 30vw, 46vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110 group-hover:rotate-1"
                 />
               </button>
             </Reveal>

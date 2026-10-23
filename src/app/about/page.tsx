@@ -42,7 +42,7 @@ export default function AboutPage() {
 
       <Section labelledBy="team-heading">
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          <Reveal className="order-last lg:order-first">
+          <Reveal zoom className="order-last lg:order-first">
             <div className="relative aspect-square overflow-hidden rounded-[2rem] shadow-xl shadow-jh-navy/10">
               <Image
                 src="/images/about/community-meeting.webp"
@@ -77,8 +77,8 @@ export default function AboutPage() {
             return (
               <li key={item.id} className={i === 0 ? "md:col-span-2 lg:col-span-1" : undefined}>
                 <Reveal delay={0.05 * i} className="h-full">
-                  <div className="h-full rounded-[1.75rem] bg-jh-light/60 p-7 ring-1 ring-border transition-colors duration-300 hover:bg-jh-light">
-                    <span className="flex size-12 items-center justify-center rounded-2xl bg-white text-jh-deep shadow-sm">
+                  <div className="group h-full rounded-[1.75rem] bg-jh-light/60 p-7 ring-1 ring-border transition-all duration-300 hover:-translate-y-1 hover:bg-jh-light hover:shadow-md">
+                    <span className="flex size-12 items-center justify-center rounded-2xl bg-white text-jh-deep shadow-sm transition-all duration-300 group-hover:-rotate-6 group-hover:bg-jh-bright group-hover:text-jh-navy">
                       <Icon aria-hidden className="size-6" />
                     </span>
                     <h3 className="mt-5 text-xl font-semibold">{item.title}</h3>

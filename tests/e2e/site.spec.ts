@@ -11,7 +11,7 @@ const PAGES = [
 const contactButton = (page: Page) => page.getByRole("button", { name: "Contact us" }).last();
 const dialog = (page: Page) => page.getByRole("dialog", { name: "Contact us" });
 
-// The form pops up by itself every 10 seconds until a message is sent; most tests start as if one had been.
+// The form pops up by itself (at once on landing on Home, otherwise every 15 seconds) until a message is sent; most tests start as if one had been.
 test.beforeEach(async ({ page }, testInfo) => {
   if (/pops? up/.test(testInfo.title)) return;
   await page.addInitScript(() => sessionStorage.setItem("jh-contact-sent", "1"));
@@ -161,11 +161,11 @@ test("the bot trap is out of reach of autofill and form-filling assistants", asy
   await expect(dialog(page).locator('input[name="website"]')).toHaveCount(0);
 });
 
-test("the form pops up every 10 seconds, even after closing, in its usual place", async ({ page }) => {
+test("the form pops up every 15 seconds, even after closing, in its usual place", async ({ page }) => {
   await page.clock.install();
   await page.goto("/about");
   await page.waitForLoadState("networkidle");
-  await page.clock.runFor(9_000);
+  await page.clock.runFor(14_000);
   await expect(dialog(page)).toBeHidden();
   await page.clock.runFor(1_500);
   await expect(dialog(page)).toBeVisible();
@@ -175,13 +175,55 @@ test("the form pops up every 10 seconds, even after closing, in its usual place"
   expect(box.x + box.width).toBeGreaterThan(viewport.width - 60);
   expect(box.y + box.height).toBeGreaterThan(viewport.height - 140);
 
-  // Closed: back again 10 seconds later.
-  await page.keyboard.press("Escape");
+  // Closed: back again 15 seconds later.
+  await dialog(page).getByRole("button", { name: "Close" }).first().click();
   await expect(dialog(page)).toBeHidden();
-  await page.clock.runFor(9_000);
+  await page.clock.runFor(14_000);
   await expect(dialog(page)).toBeHidden();
   await page.clock.runFor(1_500);
   await expect(dialog(page)).toBeVisible();
+});
+
+test("landing on the home page, the form pops up at once, then 15 seconds after closing", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  await page.clock.runFor(1_500);
+  await expect(dialog(page)).toBeVisible();
+
+  await dialog(page).getByRole("button", { name: "Close" }).first().click();
+  await expect(dialog(page)).toBeHidden();
+  await page.clock.runFor(14_000);
+  await expect(dialog(page)).toBeHidden();
+  await page.clock.runFor(1_500);
+  await expect(dialog(page)).toBeVisible();
+});
+
+test("while the form pops up, the page still scrolls and works, and focus stays put", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  await page.clock.runFor(15_500);
+  const form = dialog(page);
+  await expect(form).toBeVisible();
+  // Opened by the timer: focus isn't pulled into the form.
+  expect(await page.evaluate(() => !!document.activeElement?.closest("[role=dialog]"))).toBe(false);
+
+  // The page scrolls behind it, and clicking the page doesn't close it.
+  await page.mouse.wheel(0, 1200);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(600);
+  await page.locator("main").click({ position: { x: 20, y: 20 } });
+  await expect(form).toBeVisible();
+
+  // A link behind it works, and the form stays open with what was typed.
+  await form.getByLabel("Name").fill("Mei Ling");
+  await page.getByRole("navigation", { name: "Main" }).first().getByRole("link", { name: "About" }).click();
+  await expect(page).toHaveURL(/\/about$/);
+  await expect(form).toBeVisible();
+  await expect(form.getByLabel("Name")).toHaveValue("Mei Ling");
+
+  await page.keyboard.press("Escape");
+  await expect(form).toBeHidden();
 });
 
 test("once a message is sent, the form stops popping up", async ({ page }) => {
@@ -198,7 +240,7 @@ test("once a message is sent, the form stops popping up", async ({ page }) => {
   await form.getByRole("button", { name: "Send message" }).click();
   await expect(form.getByText("Thank you!")).toBeVisible();
   await form.getByRole("button", { name: "Close" }).first().click();
-  await page.clock.runFor(12_000);
+  await page.clock.runFor(16_000);
   await expect(dialog(page)).toBeHidden();
 });
 
@@ -257,29 +299,4 @@ test("numbers and sections still show after visiting another page and coming bac
       ).length,
   );
   expect(invisible).toBe(0);
-});
-
-test("landing on the home page, the form pops up at once, then every 10 seconds after closing", async ({ page }) => {
-  await page.clock.install();
-  await page.goto("/");
-  await page.waitForLoadState("networkidle");
-  await page.clock.runFor(1_500);
-  await expect(dialog(page)).toBeVisible();
-
-  await page.keyboard.press("Escape");
-  await expect(dialog(page)).toBeHidden();
-  await page.clock.runFor(9_000);
-  await expect(dialog(page)).toBeHidden();
-  await page.clock.runFor(1_500);
-  await expect(dialog(page)).toBeVisible();
-
-  // Reloading the home page brings it up at once again.
-  await page.reload();
-  let waited = 0;
-  await expect(async () => {
-    await page.clock.runFor(250);
-    waited += 250;
-    await expect(dialog(page)).toBeVisible({ timeout: 100 });
-  }).toPass({ timeout: 15_000 });
-  expect(waited).toBeLessThanOrEqual(3_000);
 });

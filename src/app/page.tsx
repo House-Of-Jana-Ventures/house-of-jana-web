@@ -43,7 +43,7 @@ export default function HomePage() {
               </Reveal>
             ))}
           </div>
-          <Reveal delay={0.15} className="relative">
+          <Reveal delay={0.15} zoom className="relative">
             <div className="relative mx-auto aspect-[4/5] max-w-md overflow-hidden rounded-[2rem] shadow-xl shadow-jh-navy/10">
               <Image
                 src="/images/about/team-gathering.webp"
@@ -88,8 +88,8 @@ export default function HomePage() {
             const Icon = WHY_ICONS[i % WHY_ICONS.length];
             return (
               <Reveal key={point.title} delay={0.08 * i}>
-                <div className="h-full rounded-[1.75rem] bg-white p-8 shadow-sm ring-1 ring-border">
-                  <span className="flex size-12 items-center justify-center rounded-2xl bg-jh-light text-jh-deep">
+                <div className="group h-full rounded-[1.75rem] bg-white p-8 shadow-sm ring-1 ring-border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-jh-navy/10 hover:ring-jh-bright/50">
+                  <span className="flex size-12 items-center justify-center rounded-2xl bg-jh-light text-jh-deep transition-all duration-300 group-hover:-rotate-6 group-hover:bg-jh-bright group-hover:text-jh-navy">
                     <Icon aria-hidden className="size-6" />
                   </span>
                   <h3 className="mt-5 text-2xl font-semibold">{point.title}</h3>

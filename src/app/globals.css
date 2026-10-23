@@ -155,3 +155,58 @@
     scroll-behavior: smooth;
   }
 }
+
+/* ---- Simple motions (all off for visitors who prefer less motion) ---- */
+
+/* The hero photo slowly moves closer. */
+@keyframes jh-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.07);
+  }
+}
+
+/* The round contact button's soft ring. */
+@keyframes jh-breathe {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* A soft light sweeping across a button. */
+@keyframes jh-shine {
+  from {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  to {
+    transform: translateX(260%) skewX(-20deg);
+  }
+}
+
+@utility shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+    transform: translateX(-120%) skewX(-20deg);
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover::after {
+      animation: jh-shine 0.9s ease-out;
+    }
+  }
+}

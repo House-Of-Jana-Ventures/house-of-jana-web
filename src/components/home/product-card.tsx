@@ -13,7 +13,7 @@ export function ProductCard({ product }: { product: Product }) {
       href={`/products#${product.slug}`}
       className="group flex h-full flex-col items-center rounded-[1.75rem] bg-white p-6 text-center shadow-sm ring-1 ring-border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-jh-navy/10 hover:ring-jh-bright/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jh-bright"
     >
-      <span className="relative block size-40 overflow-hidden rounded-full bg-jh-light ring-4 ring-jh-light transition-transform duration-500 group-hover:scale-105">
+      <span className="relative block size-40 overflow-hidden rounded-full bg-jh-light ring-4 ring-jh-light transition-all duration-500 group-hover:scale-105 group-hover:rotate-3 group-hover:ring-jh-bright/40">
         <Image
           src={product.image}
           alt=""

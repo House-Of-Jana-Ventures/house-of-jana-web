@@ -36,7 +36,7 @@ export default function ProductsPage() {
               aria-labelledby={`${product.slug}-name`}
               className="grid scroll-mt-28 items-center gap-10 md:grid-cols-2 md:gap-16"
             >
-              <Reveal className={cn(i % 2 === 1 && "md:order-last")}>
+              <Reveal zoom className={cn(i % 2 === 1 && "md:order-last")}>
                 <div className="relative mx-auto aspect-square w-full max-w-sm">
                   <span aria-hidden className="absolute inset-4 rounded-full bg-jh-bright/15 blur-2xl" />
                   <div className="relative size-full overflow-hidden rounded-full ring-8 ring-jh-light">
