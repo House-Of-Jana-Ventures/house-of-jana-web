@@ -17,8 +17,10 @@ test("on a phone: the menu slides out, pages fit, and the form is a bottom sheet
   }
 
   await page.goto("/");
+  // Sign in sits beside the menu button on phones too.
+  await expect(page.getByRole("link", { name: "Sign in" })).toBeVisible();
   await page.getByRole("button", { name: "Open menu" }).tap();
-  await page.getByRole("dialog").getByRole("link", { name: "Products" }).tap();
+  await page.getByRole("dialog").getByRole("link", { name: "Products", exact: true }).tap();
   await expect(page).toHaveURL(/\/products$/);
 
   await page.getByRole("button", { name: "Contact us" }).last().tap();

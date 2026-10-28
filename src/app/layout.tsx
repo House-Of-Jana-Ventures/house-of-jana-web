@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { ContactProvider } from "@/components/contact/contact-context";
 import { ContactWidget } from "@/components/contact/contact-widget";
 import { Footer } from "@/components/site/footer";
-import { Header } from "@/components/site/header";
+import { HeaderFallback, SiteHeader } from "@/components/site/site-header";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -82,7 +82,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <ContactProvider>
-          <Header />
+          <Suspense fallback={<HeaderFallback />}>
+            <SiteHeader />
+          </Suspense>
           <main id="main" tabIndex={-1} className="flex flex-1 flex-col focus:outline-none">
             {children}
           </main>

@@ -23,6 +23,15 @@ export default defineConfig({
     url: BASE,
     reuseExistingServer: false,
     timeout: 60_000,
-    env: { CONTACT_DRY_RUN: "true", GMAIL_APP_PASSWORD: "" },
+    env: {
+      CONTACT_DRY_RUN: "true",
+      GMAIL_APP_PASSWORD: "",
+      // The test API started by scripts/e2e.mjs.
+      API_URL: process.env.API_URL ?? "http://localhost:4101/api/v1",
+      // Sign-in cookies over http (the test server isn't HTTPS), and the API's stand-in Razorpay window.
+      COOKIE_SECURE: "false",
+      RAZORPAY_SCRIPT_URL: "http://localhost:4101/api/v1/dev/razorpay/checkout.js",
+      ALLOW_TEST_PAYMENT_SCRIPT: "true",
+    },
   },
 });

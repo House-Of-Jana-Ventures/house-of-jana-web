@@ -1,6 +1,7 @@
 import { CheckCircle2 } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { ContactButton } from "@/components/contact/contact-button";
 import { Reveal } from "@/components/site/reveal";
 import { PageBanner, Section, SectionHeading } from "@/components/site/section";
@@ -66,9 +67,17 @@ export default function ProductsPage() {
                     </li>
                   ))}
                 </ul>
-                <ContactButton topic={product.name} className="mt-8">
-                  Enquire about {product.name}
-                </ContactButton>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Link
+                    href={product.shop}
+                    className="inline-flex h-11 items-center rounded-full bg-jh-navy px-5 text-sm font-semibold text-white transition-colors hover:bg-jh-navy/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jh-bright"
+                  >
+                    Shop {product.name}
+                  </Link>
+                  <ContactButton topic={product.name} variant="outline">
+                    Enquire about {product.name}
+                  </ContactButton>
+                </div>
               </Reveal>
             </article>
           ))}

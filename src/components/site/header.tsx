@@ -4,15 +4,21 @@ import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ContactButton } from "@/components/contact/contact-button";
 import { useContact } from "@/components/contact/contact-context";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { nav } from "@/content/site";
+import type { MenuCategory } from "@/lib/shop/types";
 import { cn } from "@/lib/utils";
+import { ProductsMenu } from "./products-menu";
 
-/** The sticky header: logo, menu (a slide-out panel on phones) and Contact us. */
-export function Header() {
+/**
+ * The sticky header: logo, menu (a slide-out panel on phones), Contact us,
+ * and the buyer's account and cart (`account`, rendered on the server).
+ * "Products" opens the shop's menu of categories and products.
+ */
+export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?: ReactNode }) {
   const pathname = usePathname();
   const { openContact } = useContact();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -26,7 +32,12 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const isCurrent = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const isCurrent = (href: string) =>
+    href === "/"
+      ? pathname === "/"
+      : href === "/products"
+        ? pathname.startsWith("/products") || pathname.startsWith("/shop")
+        : pathname.startsWith(href);
 
   return (
     <header
@@ -54,6 +65,9 @@ export function Header() {
           <ul className="flex items-center gap-1">
             {nav.map((item) => (
               <li key={item.href}>
+                {item.href === "/products" ? (
+                  <ProductsMenu menu={menu} current={isCurrent(item.href)} />
+                ) : (
                 <Link
                   href={item.href}
                   aria-current={isCurrent(item.href) ? "page" : undefined}
@@ -65,16 +79,18 @@ export function Header() {
                 >
                   {item.label}
                 </Link>
+                )}
               </li>
             ))}
           </ul>
         </nav>
         <ContactButton className="hidden md:inline-flex">Contact us</ContactButton>
+        <div className="ml-auto flex items-center md:ml-0">{account}</div>
 
         <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
           <SheetTrigger
             aria-label="Open menu"
-            className="ml-auto flex size-11 items-center justify-center rounded-full text-jh-navy hover:bg-muted focus-visible:outline-2 focus-visible:outline-jh-bright md:hidden"
+            className="flex size-11 items-center justify-center rounded-full text-jh-navy hover:bg-muted focus-visible:outline-2 focus-visible:outline-jh-bright md:hidden"
           >
             <Menu aria-hidden className="size-6" />
           </SheetTrigger>
@@ -95,6 +111,30 @@ export function Header() {
                     >
                       {item.label}
                     </Link>
+                    {item.href === "/products" ? (
+                      <ul className="mt-1 mb-2 ml-4 flex flex-col border-l-2 border-jh-light pl-3">
+                        <li>
+                          <Link
+                            href="/shop"
+                            onClick={() => setMenuOpen(false)}
+                            className="block rounded-lg px-3 py-2 text-sm font-semibold text-jh-deep hover:bg-jh-light"
+                          >
+                            Shop all products
+                          </Link>
+                        </li>
+                        {menu.map((category) => (
+                          <li key={category.id}>
+                            <Link
+                              href={`/shop/${category.slug}`}
+                              onClick={() => setMenuOpen(false)}
+                              className="block rounded-lg px-3 py-2 text-sm hover:bg-jh-light"
+                            >
+                              {category.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
                   </li>
                 ))}
               </ul>

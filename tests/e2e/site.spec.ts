@@ -283,7 +283,7 @@ test("numbers and sections still show after visiting another page and coming bac
   const stats = page.locator("main dd span[aria-hidden]");
   await expect(stats.first()).toHaveText("50+", { timeout: 5_000 });
   const nav = page.getByRole("navigation", { name: "Main" }).first();
-  for (const other of ["About", "Products"]) {
+  for (const other of ["About", "Community Initiatives"]) {
     await nav.getByRole("link", { name: other }).click();
     await expect(page.getByRole("heading", { level: 1 }).filter({ visible: true })).toBeVisible();
     await nav.getByRole("link", { name: "Home" }).click();

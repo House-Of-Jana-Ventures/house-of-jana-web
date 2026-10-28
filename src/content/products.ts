@@ -7,6 +7,8 @@ export interface Product {
   description: string;
   points: [string, string, string];
   image: string;
+  /** Where this range is in the online shop. */
+  shop: string;
 }
 
 export const products: Product[] = [
@@ -22,6 +24,7 @@ export const products: Product[] = [
       "Treated to reduce tangling and last longer.",
     ],
     image: "/images/products/non-remy-double-drawn.webp",
+    shop: "/shop/p/bulk-hair",
   },
   {
     slug: "virgin-remy-single-drawn",
@@ -35,6 +38,7 @@ export const products: Product[] = [
       "High quality at a fair price, for everyday use or large orders.",
     ],
     image: "/images/products/virgin-remy-single-drawn.webp",
+    shop: "/shop/p/bulk-hair",
   },
   {
     slug: "weft",
@@ -48,6 +52,7 @@ export const products: Product[] = [
       "Available in many textures and colours.",
     ],
     image: "/images/products/weft.webp",
+    shop: "/shop/wefts",
   },
   {
     slug: "extensions",
@@ -61,6 +66,7 @@ export const products: Product[] = [
       "Styling freedom without damaging natural hair.",
     ],
     image: "/images/products/extensions.webp",
+    shop: "/shop/hair-extensions",
   },
   {
     slug: "wigs",
@@ -74,6 +80,7 @@ export const products: Product[] = [
       "Natural-looking for everyday wear or special occasions.",
     ],
     image: "/images/products/wigs.webp",
+    shop: "/shop/wigs-and-toppers",
   },
 ];
 
