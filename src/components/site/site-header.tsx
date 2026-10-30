@@ -25,9 +25,9 @@ export async function SiteHeader() {
 /** Shown for a moment while the header loads: the same bar with the logo. */
 export function HeaderFallback() {
   return (
-    <div className="sticky top-0 z-30 h-18 border-b border-transparent bg-white/85 backdrop-blur-md">
-      <div className="mx-auto flex h-18 max-w-6xl items-center px-4 sm:px-6">
-        <Image src="/images/logo.png" alt="Jana Human Hair" width={317} height={140} className="h-12 w-auto" />
+    <div className="sticky top-0 z-30 h-16 border-b border-border bg-white/95 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-6xl items-center px-4 sm:px-6">
+        <Image src="/images/logo-strong.png" alt="Jana Human Hair" width={317} height={140} className="h-11 w-auto" />
       </div>
     </div>
   );

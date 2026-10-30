@@ -25,7 +25,7 @@ export function AccountNav() {
               href={s.href}
               aria-current={current(s.href) ? "page" : undefined}
               className={cn(
-                "block rounded-full px-4 py-2 text-sm whitespace-nowrap ring-1 ring-border hover:bg-white lg:rounded-xl lg:ring-0",
+                "block rounded-sm px-4 py-2 text-sm whitespace-nowrap ring-1 ring-border hover:bg-white lg:rounded-xl lg:ring-0",
                 current(s.href) && "bg-jh-bright font-semibold text-jh-navy ring-jh-bright hover:bg-jh-bright lg:bg-white lg:text-jh-deep lg:shadow-sm",
               )}
             >

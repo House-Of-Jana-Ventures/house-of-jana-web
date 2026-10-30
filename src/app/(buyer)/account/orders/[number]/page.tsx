@@ -86,7 +86,7 @@ async function OrderContent({ params, searchParams }: PageProps<"/account/orders
         </Link>
         <p className="text-sm text-muted-foreground">Placed {IST.format(new Date(order.placedAt))}</p>
         <h1 className="mt-1 text-4xl font-semibold">Order {order.orderNumber}</h1>
-        <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold ring-1 ring-border">
+        <p className="mt-3 inline-flex items-center gap-2 rounded-sm bg-white px-4 py-2 text-sm font-semibold ring-1 ring-border">
           <StatusIcon aria-hidden className="size-4 text-jh-deep" />
           {status.label}
         </p>
@@ -221,7 +221,7 @@ async function OrderContent({ params, searchParams }: PageProps<"/account/orders
           <form action={orderAgain.bind(null, order.orderNumber)}>
             <button
               type="submit"
-              className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold ring-1 ring-border hover:ring-jh-bright"
+              className="rounded-sm bg-white px-5 py-2.5 text-sm font-semibold ring-1 ring-border hover:ring-jh-bright"
             >
               Order again
             </button>

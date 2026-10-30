@@ -215,7 +215,7 @@ export function PaymentPanel({
             disabled={busy}
             aria-busy={busy}
             onClick={() => void pay()}
-            className="h-12 w-full rounded-full px-6 text-base sm:w-auto"
+            className="h-12 w-full rounded-sm px-6 text-base sm:w-auto"
           >
             {busy ? <Loader2 aria-hidden className="animate-spin" /> : <Lock aria-hidden />}
             Pay {rupees(amount)} online
@@ -226,7 +226,7 @@ export function PaymentPanel({
           </noscript>
         </div>
       ) : state === "waiting" && !rechecking ? (
-        <Button type="button" variant="outline" className="mt-5 h-11 rounded-full px-5" onClick={() => router.refresh()}>
+        <Button type="button" variant="outline" className="mt-5 h-11 rounded-sm px-5" onClick={() => router.refresh()}>
           Check again
         </Button>
       ) : null}

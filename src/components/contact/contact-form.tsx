@@ -205,7 +205,7 @@ function FormFields({
               <button
                 type="button"
                 onClick={applySuggestion}
-                className="self-start rounded-full bg-jh-light px-3 py-1 text-xs font-medium text-jh-navy ring-1 ring-jh-bright/40 transition-colors hover:bg-jh-bright/20"
+                className="self-start rounded-sm bg-jh-light px-3 py-1 text-xs font-medium text-jh-navy ring-1 ring-jh-bright/40 transition-colors hover:bg-jh-bright/20"
               >
                 Yes, use {suggestion}
               </button>
@@ -267,7 +267,7 @@ function FormFields({
         href={site.whatsapp}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-11 items-center justify-center gap-2 rounded-full border border-[#25D366]/50 bg-white text-base font-semibold text-jh-navy transition-colors hover:bg-[#25D366]/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366]"
+        className="flex h-11 items-center justify-center gap-2 rounded-sm border border-[#25D366]/50 bg-white text-base font-semibold text-jh-navy transition-colors hover:bg-[#25D366]/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366]"
       >
         <WhatsAppIcon className="size-5" />
         Chat with us on WhatsApp

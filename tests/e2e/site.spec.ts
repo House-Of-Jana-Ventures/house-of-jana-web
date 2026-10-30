@@ -2,16 +2,14 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 const PAGES = [
-  { path: "/", heading: "From the heart of Midnapore to the world" },
+  { path: "/", heading: "Jana Human Hair: natural human hair extensions from Midnapore" },
   { path: "/about", heading: "About Jana Human Hair" },
-  { path: "/products", heading: "Discover the perfect hair for every need" },
-  { path: "/community-initiatives", heading: "Our philanthropic journey" },
 ];
 
 const contactButton = (page: Page) => page.getByRole("button", { name: "Contact us" }).last();
 const dialog = (page: Page) => page.getByRole("dialog", { name: "Contact us" });
 
-// The form pops up by itself (at once on landing on Home, otherwise every 15 seconds) until a message is sent; most tests start as if one had been.
+// The form pops up by itself once per visit, 30 seconds after arriving, unless it was opened or a message sent; most tests start as if one had been sent.
 test.beforeEach(async ({ page }, testInfo) => {
   if (/pops? up/.test(testInfo.title)) return;
   await page.addInitScript(() => sessionStorage.setItem("jh-contact-sent", "1"));
@@ -31,7 +29,6 @@ async function scrollThrough(page: Page) {
 test("every page has its heading, the menu and the footer details", async ({ page }) => {
   for (const { path, heading } of PAGES) {
     await page.goto(path);
-    // The accessible name (the hero's animated words are hidden from screen readers).
     await expect(page.getByRole("heading", { level: 1, name: heading, exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     await expect(page.getByRole("navigation", { name: "Main" }).first()).toBeVisible();
@@ -85,11 +82,11 @@ test("what was typed survives the server's checks", async ({ page }) => {
   await expect(form.getByLabel("Company")).toHaveValue("Silk Hair Co.");
 });
 
-test("Enquire about a product fills in the message; Escape closes", async ({ page }) => {
-  await page.goto("/products");
-  await page.getByRole("button", { name: "Enquire about Weft" }).click();
+test("Bulk enquiry fills in the message; Escape closes", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Bulk enquiry" }).click();
   await expect(dialog(page).getByLabel("How can we help?")).toHaveValue(
-    "I'd like to know more about Weft. ",
+    "I'd like to know more about bulk orders. ",
   );
   await page.keyboard.press("Escape");
   await expect(dialog(page)).toBeHidden();
@@ -103,19 +100,39 @@ test("old WordPress addresses redirect; /contact opens the form", async ({ page 
     await page.goto(old);
     await expect(page.getByRole("heading", { level: 1, name: PAGES[0].heading })).toBeVisible();
   }
+  // Pages removed in phase J3.
+  await page.goto("/products");
+  await expect(page).toHaveURL(/\/shop$/);
+  await page.goto("/community-initiatives");
+  await expect(page).toHaveURL(/\/about$/);
   const missing = await page.goto("/no-such-page");
   expect(missing?.status()).toBe(404);
 });
 
-test("the community gallery opens photos large and moves between them", async ({ page }) => {
-  await page.goto("/community-initiatives");
-  await page.getByRole("button", { name: /^View larger: Crocheted bunny/ }).click();
-  const viewer = page.getByRole("dialog");
-  await expect(viewer.getByText(/1 of 12/)).toBeVisible();
-  await viewer.getByRole("button", { name: "Next photo" }).click();
-  await expect(viewer.getByText(/2 of 12/)).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(viewer).toBeHidden();
+test("the home banner moves every 3 seconds, stops under the pointer, and the dots choose a slide", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  const banner = page.getByRole("region", { name: "Jana Human Hair", exact: true });
+  // Only the slide on show is visible to screen readers and the keyboard.
+  const title = banner.getByRole("heading", { level: 2 });
+  await expect(title).toHaveText("The Art of Beautiful Hair");
+  await page.clock.runFor(3_200);
+  await expect(title).toHaveText("More Volume. More Confidence.");
+
+  // The pointer on it: it stops. Off it: it carries on.
+  await banner.hover();
+  await page.clock.runFor(10_000);
+  await expect(title).toHaveText("More Volume. More Confidence.");
+  await page.mouse.move(5, page.viewportSize()!.height - 5);
+  await page.clock.runFor(3_200);
+  await expect(title).toHaveText("Crafted for a Natural Finish");
+
+  // No arrows or pause button; the dots choose a slide.
+  await expect(banner.getByRole("button", { name: /Next|Previous|Pause|Play/ })).toHaveCount(0);
+  await banner.getByRole("button", { name: /^Show slide 4/ }).click();
+  await expect(title).toHaveText("Experience the Beauty of Premium Hair");
+  await expect(banner.getByRole("button", { name: /^Show slide 4/ })).toHaveAttribute("aria-current", "true");
 });
 
 test("testimonials move with the arrows", async ({ page }) => {
@@ -161,11 +178,13 @@ test("the bot trap is out of reach of autofill and form-filling assistants", asy
   await expect(dialog(page).locator('input[name="website"]')).toHaveCount(0);
 });
 
-test("the form pops up every 15 seconds, even after closing, in its usual place", async ({ page }) => {
+test("the form pops up once, 30 seconds after arriving, in its usual place", async ({ page }) => {
+  // Fast-forwarding the page's clock runs its timers, which takes real time.
+  test.setTimeout(90_000);
   await page.clock.install();
   await page.goto("/about");
   await page.waitForLoadState("networkidle");
-  await page.clock.runFor(14_000);
+  await page.clock.runFor(29_000);
   await expect(dialog(page)).toBeHidden();
   await page.clock.runFor(1_500);
   await expect(dialog(page)).toBeVisible();
@@ -175,35 +194,34 @@ test("the form pops up every 15 seconds, even after closing, in its usual place"
   expect(box.x + box.width).toBeGreaterThan(viewport.width - 60);
   expect(box.y + box.height).toBeGreaterThan(viewport.height - 140);
 
-  // Closed: back again 15 seconds later.
+  // Closed: it doesn't come back this visit, even after a reload.
   await dialog(page).getByRole("button", { name: "Close" }).first().click();
   await expect(dialog(page)).toBeHidden();
-  await page.clock.runFor(14_000);
+  await page.clock.runFor(35_000);
   await expect(dialog(page)).toBeHidden();
-  await page.clock.runFor(1_500);
-  await expect(dialog(page)).toBeVisible();
+  await page.reload();
+  await page.waitForLoadState("networkidle");
+  await page.clock.runFor(31_000);
+  await expect(dialog(page)).toBeHidden();
 });
 
-test("landing on the home page, the form pops up at once, then 15 seconds after closing", async ({ page }) => {
+test("once the visitor has opened the form, it never pops up by itself", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");
   await page.waitForLoadState("networkidle");
-  await page.clock.runFor(1_500);
+  await contactButton(page).click();
   await expect(dialog(page)).toBeVisible();
-
   await dialog(page).getByRole("button", { name: "Close" }).first().click();
   await expect(dialog(page)).toBeHidden();
-  await page.clock.runFor(14_000);
+  await page.clock.runFor(35_000);
   await expect(dialog(page)).toBeHidden();
-  await page.clock.runFor(1_500);
-  await expect(dialog(page)).toBeVisible();
 });
 
 test("while the form pops up, the page still scrolls and works, and focus stays put", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");
   await page.waitForLoadState("networkidle");
-  await page.clock.runFor(15_500);
+  await page.clock.runFor(30_500);
   const form = dialog(page);
   await expect(form).toBeVisible();
   // Opened by the timer: focus isn't pulled into the form.
@@ -240,7 +258,7 @@ test("once a message is sent, the form stops popping up", async ({ page }) => {
   await form.getByRole("button", { name: "Send message" }).click();
   await expect(form.getByText("Thank you!")).toBeVisible();
   await form.getByRole("button", { name: "Close" }).first().click();
-  await page.clock.runFor(16_000);
+  await page.clock.runFor(31_000);
   await expect(dialog(page)).toBeHidden();
 });
 
@@ -281,12 +299,15 @@ test("required fields are starred, and WhatsApp is offered as another way", asyn
 test("numbers and sections still show after visiting another page and coming back", async ({ page }) => {
   await page.goto("/");
   const stats = page.locator("main dd span[aria-hidden]");
+  // The numbers sit in the story section and count up once scrolled into view.
+  await stats.first().scrollIntoViewIfNeeded();
   await expect(stats.first()).toHaveText("50+", { timeout: 5_000 });
   const nav = page.getByRole("navigation", { name: "Main" }).first();
-  for (const other of ["About", "Community Initiatives"]) {
+  for (const other of ["About"]) {
     await nav.getByRole("link", { name: other }).click();
     await expect(page.getByRole("heading", { level: 1 }).filter({ visible: true })).toBeVisible();
     await nav.getByRole("link", { name: "Home" }).click();
+    await stats.filter({ visible: true }).first().scrollIntoViewIfNeeded();
     await expect(stats.filter({ visible: true }).first()).toHaveText("50+", { timeout: 5_000 });
     await expect(stats.filter({ visible: true }).nth(1)).toHaveText("4");
   }

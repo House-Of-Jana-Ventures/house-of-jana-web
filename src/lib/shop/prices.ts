@@ -53,6 +53,15 @@ export function rangeText(range: { min: string; max: string }): string {
   return range.min === range.max ? rupees(range.min) : `${rupees(range.min)} – ${rupees(range.max)}`;
 }
 
+/**
+ * Where a product page's quantity box starts: the product's bulk minimum, so
+ * the bulk price shows first (fewer with "−" switches to the single price),
+ * or the most that can be ordered, if that's less.
+ */
+export function startingQuantity(bulkMinQty: number, max: number | null): number {
+  return clampQuantity(bulkMinQty, max);
+}
+
 /** A quantity typed in the box, kept within 1 and the most that can be ordered. */
 export function clampQuantity(input: string | number, max: number | null): number {
   const n = Math.floor(Number(input));

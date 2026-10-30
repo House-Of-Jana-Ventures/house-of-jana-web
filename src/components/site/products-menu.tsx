@@ -53,8 +53,8 @@ export function ProductsMenu({ menu, current }: { menu: MenuCategory[]; current:
         aria-controls={panelId}
         onClick={() => setOpen((o) => !o)}
         className={cn(
-          "relative flex items-center gap-1 rounded-full px-3.5 py-2 text-sm font-medium text-jh-navy/80 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright",
-          "after:absolute after:inset-x-3.5 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-jh-bright after:transition-transform after:duration-300 hover:after:scale-x-100",
+          "relative flex items-center gap-1 px-3 py-2 text-sm text-jh-navy/75 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright",
+          "after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-jh-navy after:transition-transform after:duration-300 hover:after:scale-x-100",
           current && "text-jh-navy after:scale-x-100",
         )}
       >
@@ -101,16 +101,9 @@ export function ProductsMenu({ menu, current }: { menu: MenuCategory[]; current:
             <Link
               href="/shop"
               onClick={() => setOpen(false)}
-              className="rounded-full bg-jh-bright px-4 py-2 text-jh-navy hover:bg-jh-bright/85"
+              className="rounded-sm bg-jh-bright px-4 py-2 text-jh-navy hover:bg-jh-bright/85"
             >
               Shop all products
-            </Link>
-            <Link
-              href="/products"
-              onClick={() => setOpen(false)}
-              className="rounded-full px-4 py-2 text-jh-deep ring-1 ring-border hover:bg-jh-light"
-            >
-              About our range
             </Link>
           </div>
         </div>

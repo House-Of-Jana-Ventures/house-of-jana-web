@@ -24,9 +24,30 @@ export function ContactButton({
       variant={variant}
       aria-haspopup="dialog"
       onClick={() => openContact(topic)}
-      className={cn("h-11 rounded-full px-5 text-sm font-semibold", className)}
+      className={cn("h-11 rounded-sm px-5 text-sm font-semibold", className)}
     >
       {children}
     </Button>
+  );
+}
+
+/**
+ * A plain button that opens the contact form, styled entirely by its
+ * `className` (for the thin outline buttons and underlined links of phase J3).
+ */
+export function ContactTrigger({
+  children,
+  topic,
+  className,
+}: {
+  children: ReactNode;
+  topic?: string;
+  className?: string;
+}) {
+  const { openContact } = useContact();
+  return (
+    <button type="button" aria-haspopup="dialog" onClick={() => openContact(topic)} className={className}>
+      {children}
+    </button>
   );
 }

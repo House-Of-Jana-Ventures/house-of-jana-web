@@ -9,7 +9,7 @@ import { useContact } from "@/components/contact/contact-context";
 import { Button } from "@/components/ui/button";
 import { addToCart, loadCart } from "@/lib/cart/actions";
 import type { Cart } from "@/lib/cart/types";
-import { bulkSaving, clampQuantity, quote, rupees } from "@/lib/shop/prices";
+import { bulkSaving, clampQuantity, quote, rupees, startingQuantity } from "@/lib/shop/prices";
 import type { ShopProduct, ShopVariant } from "@/lib/shop/types";
 import { choose, findVariant, startingChoice, valueState } from "@/lib/shop/variants";
 import { cn } from "@/lib/utils";
@@ -24,12 +24,13 @@ export function ProductView({ product }: { product: ShopProduct }) {
   const params = useSearchParams();
   const { openContact } = useContact();
   const [choice, setChoice] = useState(() => startingChoice(product.options, product.variants, params.get("v")));
-  const [quantity, setQuantity] = useState(1);
   const variant = findVariant(product.options, product.variants, choice) ?? product.variants[0];
+  // Starts at the bulk minimum, so the bulk price shows first; "−" goes below it.
+  const [quantity, setQuantity] = useState(() => startingQuantity(product.bulkMinQty, maxFor(variant)));
   const images = useMemo(() => photosFor(product, variant), [product, variant]);
   const [shown, setShown] = useState<string | null>(null);
   const main = images.find((i) => i.id === shown) ?? images[0];
-  const max = variant.stockMode === "IN_STOCK" ? Math.max(variant.maxQuantity ?? 0, 0) : null;
+  const max = maxFor(variant);
   const total = quote(quantity, variant, product.bulkMinQty);
   const saving = bulkSaving(variant.singlePrice, variant.bulkPrice);
   const router = useRouter();
@@ -84,7 +85,7 @@ export function ProductView({ product }: { product: ShopProduct }) {
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-14">
       {/* Gallery */}
       <div className="lg:sticky lg:top-28 lg:self-start">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-jh-light ring-1 ring-border">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-md bg-jh-light ring-1 ring-border">
           {main ? (
             <Image
               key={main.id}
@@ -144,7 +145,7 @@ export function ProductView({ product }: { product: ShopProduct }) {
                   <label
                     key={value}
                     className={cn(
-                      "cursor-pointer rounded-full px-4 py-2 text-sm ring-1 ring-border transition-colors select-none hover:ring-jh-bright",
+                      "cursor-pointer rounded-sm px-4 py-2 text-sm ring-1 ring-border transition-colors select-none hover:ring-jh-bright",
                       "has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-jh-bright",
                       checked && "bg-jh-bright font-semibold text-jh-navy ring-jh-bright",
                       !checked && state === "other" && "border border-dashed border-input text-muted-foreground ring-0",
@@ -235,7 +236,7 @@ export function ProductView({ product }: { product: ShopProduct }) {
               onClick={add}
               disabled={adding || !variant.available}
               aria-busy={adding}
-              className="h-12 rounded-full px-6 text-base"
+              className="h-12 rounded-sm px-6 text-base"
             >
               {adding ? <Loader2 aria-hidden className="animate-spin" /> : <ShoppingBag aria-hidden />} Add to cart
             </Button>
@@ -243,7 +244,7 @@ export function ProductView({ product }: { product: ShopProduct }) {
               type="button"
               variant="outline"
               aria-haspopup="dialog"
-              className="h-12 rounded-full px-6 text-base"
+              className="h-12 rounded-sm px-6 text-base"
               onClick={() =>
                 openContact(`${product.name}: ${variant.label} (${variant.sku}), ${quantity} × ${product.unitLabel}`)
               }
@@ -350,4 +351,9 @@ function photosFor(product: ShopProduct, variant: ShopVariant) {
 /** ["texture", "draw", "length"] → "texture, draw or length". */
 function listWords(words: string[]): string {
   return words.length < 2 ? (words[0] ?? "") : `${words.slice(0, -1).join(", ")} or ${words.at(-1)}`;
+}
+
+/** The most of this variant that can be ordered: its stock when sold from stock, otherwise no limit. */
+function maxFor(variant: ShopVariant): number | null {
+  return variant.stockMode === "IN_STOCK" ? Math.max(variant.maxQuantity ?? 0, 0) : null;
 }

@@ -33,6 +33,25 @@ export function markSent() {
   }
 }
 
+/** Remembers, for this browser tab's visit, that the form has been open once (then it never pops up by itself). */
+const SEEN_KEY = "jh-contact-seen";
+
+export function seenThisVisit(): boolean {
+  try {
+    return sessionStorage.getItem(SEEN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function markSeen() {
+  try {
+    sessionStorage.setItem(SEEN_KEY, "1");
+  } catch {
+    // Storage blocked (private mode): at most one pop-up per page load, which is harmless.
+  }
+}
+
 const ContactContext = createContext<ContactContextValue | null>(null);
 
 /** Lets any button on the site open the one contact form. */

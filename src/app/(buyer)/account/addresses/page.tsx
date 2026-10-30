@@ -100,7 +100,7 @@ async function AddressBook({ searchParams }: PageProps<"/account/addresses">) {
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link
                   href={`/account/addresses?edit=${a.id}`}
-                  className="rounded-full px-3 py-1.5 font-medium text-jh-deep ring-1 ring-border hover:bg-jh-light"
+                  className="rounded-sm px-3 py-1.5 font-medium text-jh-deep ring-1 ring-border hover:bg-jh-light"
                 >
                   Edit <span className="sr-only">{a.fullName}, {a.city}</span>
                 </Link>
@@ -108,7 +108,7 @@ async function AddressBook({ searchParams }: PageProps<"/account/addresses">) {
                   <form action={addressCommand}>
                     <input type="hidden" name="id" value={a.id} />
                     <input type="hidden" name="command" value="default" />
-                    <button type="submit" className="rounded-full px-3 py-1.5 ring-1 ring-border hover:bg-jh-light">
+                    <button type="submit" className="rounded-sm px-3 py-1.5 ring-1 ring-border hover:bg-jh-light">
                       Make default <span className="sr-only">{a.fullName}, {a.city}</span>
                     </button>
                   </form>
@@ -118,7 +118,7 @@ async function AddressBook({ searchParams }: PageProps<"/account/addresses">) {
                   <input type="hidden" name="command" value="delete" />
                   <button
                     type="submit"
-                    className="rounded-full px-3 py-1.5 text-muted-foreground ring-1 ring-border hover:bg-destructive/10 hover:text-destructive"
+                    className="rounded-sm px-3 py-1.5 text-muted-foreground ring-1 ring-border hover:bg-destructive/10 hover:text-destructive"
                   >
                     Delete <span className="sr-only">{a.fullName}, {a.city}</span>
                   </button>
@@ -131,7 +131,7 @@ async function AddressBook({ searchParams }: PageProps<"/account/addresses">) {
       {addresses.length < MAX_ADDRESSES ? (
         <Link
           href="/account/addresses?new=1"
-          className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-jh-bright px-5 py-2.5 font-semibold text-jh-navy hover:bg-jh-bright/85"
+          className="mt-6 inline-flex items-center gap-1.5 rounded-sm bg-jh-bright px-5 py-2.5 font-semibold text-jh-navy hover:bg-jh-bright/85"
         >
           <Plus aria-hidden className="size-4" /> Add an address
         </Link>

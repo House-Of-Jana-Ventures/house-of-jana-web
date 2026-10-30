@@ -44,7 +44,7 @@ export function Reveal({
 /** The short bright-blue line under a heading, drawing itself from the left when it comes into view. */
 export function DrawLine({ center = false }: { center?: boolean }) {
   const reduced = useReducedMotion();
-  const className = cn("mt-5 block h-1 w-14 origin-left rounded-full bg-jh-bright", center && "mx-auto origin-center");
+  const className = cn("mt-5 block h-px w-12 origin-left bg-jh-bright", center && "mx-auto origin-center");
   if (reduced) return <span aria-hidden className={className} />;
   return (
     <motion.span

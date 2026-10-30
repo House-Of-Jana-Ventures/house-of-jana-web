@@ -173,6 +173,8 @@ const api = spawn("node", ["dist/main"], {
     FREE_SHIPPING_THRESHOLD_INDIA: "50000",
     ORDER_JOBS_ENABLED: "false",
     SHOP_URL: "http://localhost:3301",
+    // The tests' shop default, whatever the API's own .env says.
+    BULK_MIN_QTY: "25",
   },
   stdio: "inherit",
 });

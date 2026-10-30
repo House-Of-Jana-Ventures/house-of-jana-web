@@ -2,7 +2,7 @@
 
 import { MessageCircle, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -11,9 +11,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { site } from "@/content/site";
-import { popupDelay, shouldPopUp } from "@/lib/contact-popup";
+import { POPUP_DELAY_MS, shouldPopUp } from "@/lib/contact-popup";
 import { cn } from "@/lib/utils";
-import { sentThisVisit, useContact } from "./contact-context";
+import { markSeen, seenThisVisit, sentThisVisit, useContact } from "./contact-context";
 import { ContactForm } from "./contact-form";
 
 /**
@@ -23,9 +23,8 @@ import { ContactForm } from "./contact-form";
  * `?contact` in the address opens it on arrival (old /contact links redirect
  * there).
  *
- * It also opens by itself: a moment after landing on the home page, 15
- * seconds after arriving on any other page, and again 15 seconds
- * after each time it's closed, until a message is sent. It never blocks the
+ * It also opens by itself once per visit, 30 seconds after arriving, unless
+ * the visitor has already opened it or sent a message. It never blocks the
  * page: no dimming, no scroll lock, the page's links and buttons keep
  * working, and clicking the page doesn't close it (only × or Escape do).
  * When the timer opens it, focus stays where the visitor was.
@@ -38,29 +37,28 @@ export function ContactWidget() {
   const [seen, setSeen] = useState(false);
   const params = useSearchParams();
 
-  const pathname = usePathname();
-  // The page the visitor landed on (this component lives for the whole visit).
-  const landedOn = useRef(pathname);
-  // Whether the form has opened at all since the page loaded.
-  const openedBefore = useRef(false);
+  // The form's latest open state, for the one-off timer below.
+  const openNow = useRef(open);
 
   useEffect(() => {
     if (params.has("contact")) openContact();
   }, [params, openContact]);
 
-  // Whenever the form is closed (and on arrival), open it again after a while:
-  // at once on landing on the home page, otherwise 15 seconds.
+  // Once it has been open, by anyone, it never pops up by itself again this visit.
   useEffect(() => {
-    if (open) {
-      openedBefore.current = true;
-      return;
-    }
-    const delay = popupDelay({ landedOn: landedOn.current, openedBefore: openedBefore.current });
+    openNow.current = open;
+    if (open) markSeen();
+  }, [open]);
+
+  // Once, 30 seconds after arriving (this component lives for the whole visit).
+  useEffect(() => {
     const timer = window.setTimeout(() => {
-      if (shouldPopUp({ open: false, sent: sentThisVisit() })) openContact(undefined, "timer");
-    }, delay);
+      if (shouldPopUp({ open: openNow.current, sent: sentThisVisit(), seen: seenThisVisit() })) {
+        openContact(undefined, "timer");
+      }
+    }, POPUP_DELAY_MS);
     return () => window.clearTimeout(timer);
-  }, [open, openContact]);
+  }, [openContact]);
 
   const byTimer = openedBy === "timer";
 
@@ -79,7 +77,7 @@ export function ContactWidget() {
         <MessageCircle aria-hidden className="size-6" strokeWidth={2} />
         <span
           aria-hidden
-          className="pointer-events-none absolute right-full mr-3 hidden rounded-full bg-jh-navy px-3.5 py-1.5 text-sm font-medium whitespace-nowrap text-white opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100 sm:block"
+          className="pointer-events-none absolute right-full mr-3 hidden rounded-sm bg-jh-navy px-3.5 py-1.5 text-sm font-medium whitespace-nowrap text-white opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100 sm:block"
         >
           Contact us
         </span>

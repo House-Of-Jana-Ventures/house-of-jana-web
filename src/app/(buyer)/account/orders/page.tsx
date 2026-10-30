@@ -65,7 +65,7 @@ async function Orders({ searchParams }: PageProps<"/account/orders">) {
             href={link({ show: f.key })}
             aria-current={f.key === filter.key ? "page" : undefined}
             className={cn(
-              "shrink-0 rounded-full bg-white px-4 py-1.5 text-sm ring-1 ring-border hover:ring-jh-bright",
+              "shrink-0 rounded-sm bg-white px-4 py-1.5 text-sm ring-1 ring-border hover:ring-jh-bright",
               f.key === filter.key && "bg-jh-bright font-semibold text-jh-navy ring-jh-bright",
             )}
           >
@@ -90,7 +90,7 @@ async function Orders({ searchParams }: PageProps<"/account/orders">) {
       {totalPages > 1 ? (
         <nav aria-label="Pages" className="mt-6 flex items-center gap-4 text-sm">
           {page > 1 ? (
-            <Link href={link({ page: page - 1 })} className="rounded-full bg-white px-4 py-2 ring-1 ring-border hover:ring-jh-bright">
+            <Link href={link({ page: page - 1 })} className="rounded-sm bg-white px-4 py-2 ring-1 ring-border hover:ring-jh-bright">
               Newer
             </Link>
           ) : null}
@@ -98,7 +98,7 @@ async function Orders({ searchParams }: PageProps<"/account/orders">) {
             Page {page} of {totalPages}
           </span>
           {page < totalPages ? (
-            <Link href={link({ page: page + 1 })} className="rounded-full bg-white px-4 py-2 ring-1 ring-border hover:ring-jh-bright">
+            <Link href={link({ page: page + 1 })} className="rounded-sm bg-white px-4 py-2 ring-1 ring-border hover:ring-jh-bright">
               Older
             </Link>
           ) : null}

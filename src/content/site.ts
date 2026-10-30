@@ -29,12 +29,18 @@ export const site = {
   ],
 } as const;
 
+/** The thin bar above the header: short, true promises. */
+export const announcements = [
+  "100% natural human hair, handcrafted in Midnapore",
+  "Lower bulk prices on every product",
+  "We ship across India and worldwide",
+] as const;
+
 /** The main menu. "Contact" opens the contact form (there's no Contact page). */
 export const nav = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-  { label: "Products", href: "/products" },
-  { label: "Community Initiatives", href: "/community-initiatives" },
+  { label: "Products", href: "/shop" },
 ] as const;
 
 /** "+91 80176 79521" → "tel:+918017679521". */

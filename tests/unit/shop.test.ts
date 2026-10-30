@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bulkSaving, clampQuantity, quote, rangeText, rupees, tierFor } from "@/lib/shop/prices";
+import { bulkSaving, clampQuantity, quote, rangeText, rupees, startingQuantity, tierFor } from "@/lib/shop/prices";
 import { choose, findVariant, startingChoice, valueState } from "@/lib/shop/variants";
 
 const OPTIONS = [
@@ -73,5 +73,12 @@ describe("prices", () => {
     expect(clampQuantity("abc", 5)).toBe(1);
     expect(clampQuantity("12.7", null)).toBe(12);
     expect(clampQuantity(80, 40)).toBe(40);
+  });
+
+  it("starts the quantity at the bulk minimum, or the stock if that's less", () => {
+    expect(startingQuantity(10, null)).toBe(10);
+    expect(startingQuantity(25, null)).toBe(25);
+    expect(startingQuantity(10, 4)).toBe(4);
+    expect(startingQuantity(10, 0)).toBe(1);
   });
 });

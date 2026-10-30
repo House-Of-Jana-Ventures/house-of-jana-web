@@ -1,18 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Playfair_Display } from "next/font/google";
+import { Cormorant_Garamond, Geist } from "next/font/google";
 import { Suspense } from "react";
 import { ContactProvider } from "@/components/contact/contact-context";
 import { ContactWidget } from "@/components/contact/contact-widget";
+import { AnnouncementBar } from "@/components/site/announcement-bar";
 import { Footer } from "@/components/site/footer";
 import { HeaderFallback, SiteHeader } from "@/components/site/site-header";
 import { site } from "@/content/site";
 import "./globals.css";
 
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const display = Playfair_Display({
+// A thin, elegant serif for headings (phase J3).
+const display = Cormorant_Garamond({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -77,11 +79,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         <a
           href="#main"
-          className="sr-only z-50 rounded-full bg-jh-navy px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+          className="sr-only z-50 rounded-sm bg-jh-navy px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
         >
           Skip to content
         </a>
         <ContactProvider>
+          <AnnouncementBar />
           <Suspense fallback={<HeaderFallback />}>
             <SiteHeader />
           </Suspense>

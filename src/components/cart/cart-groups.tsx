@@ -25,7 +25,7 @@ export function CartGroups({ cart, editable = true }: { cart: Cart; editable?: b
             </h2>
             <span
               className={cn(
-                "rounded-full px-3 py-1 text-xs font-semibold",
+                "rounded-sm px-3 py-1 text-xs font-semibold",
                 product.tier === "bulk" ? "bg-jh-bright/20 text-jh-deep" : "bg-jh-light text-jh-navy",
               )}
             >
@@ -101,7 +101,7 @@ function QuantityForm({ lineId, quantity, label }: { lineId: string; quantity: n
         <button type="submit" name="quantity" value={quantity + 1} aria-label={`One more ${label}`} className={step}>
           <Plus aria-hidden className="size-4" />
         </button>
-        <button type="submit" className="mr-1 rounded-full px-3 py-1.5 text-xs font-semibold text-jh-deep hover:bg-jh-light">
+        <button type="submit" className="mr-1 rounded-sm px-3 py-1.5 text-xs font-semibold text-jh-deep hover:bg-jh-light">
           Update
         </button>
       </form>
@@ -110,7 +110,7 @@ function QuantityForm({ lineId, quantity, label }: { lineId: string; quantity: n
         <input type="hidden" name="quantity" value="0" />
         <button
           type="submit"
-          className="flex items-center gap-1.5 rounded-full px-3 py-2 text-sm text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+          className="flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
         >
           <Trash2 aria-hidden className="size-4" /> Remove <span className="sr-only">{label}</span>
         </button>

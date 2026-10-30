@@ -137,7 +137,7 @@ export function CartDrawer({
               href="/checkout"
               onClick={() => onOpenChange(false)}
               aria-disabled={!cart?.readyForCheckout}
-              className="flex h-12 items-center justify-center rounded-full bg-jh-bright font-semibold text-jh-navy hover:bg-jh-bright/85 aria-disabled:pointer-events-none aria-disabled:opacity-50"
+              className="flex h-12 items-center justify-center rounded-sm bg-jh-bright font-semibold text-jh-navy hover:bg-jh-bright/85 aria-disabled:pointer-events-none aria-disabled:opacity-50"
             >
               Checkout
             </Link>
@@ -145,14 +145,14 @@ export function CartDrawer({
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="h-11 rounded-full text-sm font-medium ring-1 ring-border hover:bg-jh-light"
+                className="h-11 rounded-sm text-sm font-medium ring-1 ring-border hover:bg-jh-light"
               >
                 Continue shopping
               </button>
               <Link
                 href="/cart"
                 onClick={() => onOpenChange(false)}
-                className="flex h-11 items-center justify-center rounded-full text-sm font-medium ring-1 ring-border hover:bg-jh-light"
+                className="flex h-11 items-center justify-center rounded-sm text-sm font-medium ring-1 ring-border hover:bg-jh-light"
               >
                 View cart
               </Link>

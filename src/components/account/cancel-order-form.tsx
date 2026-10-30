@@ -16,7 +16,7 @@ export function CancelOrderForm({ orderNumber }: { orderNumber: string }) {
       <button
         type="button"
         onClick={() => setAsking(true)}
-        className="self-start rounded-full px-5 py-2.5 text-sm font-semibold text-muted-foreground ring-1 ring-border hover:bg-destructive/10 hover:text-destructive"
+        className="self-start rounded-sm px-5 py-2.5 text-sm font-semibold text-muted-foreground ring-1 ring-border hover:bg-destructive/10 hover:text-destructive"
       >
         Cancel this order
       </button>
@@ -35,7 +35,7 @@ export function CancelOrderForm({ orderNumber }: { orderNumber: string }) {
       </div>
       <div className="flex flex-wrap gap-2">
         <SubmitButton className="bg-destructive/10 text-destructive hover:bg-destructive/20">Yes, cancel the order</SubmitButton>
-        <button type="button" onClick={() => setAsking(false)} className="h-12 rounded-full px-5 text-sm ring-1 ring-border hover:bg-jh-light">
+        <button type="button" onClick={() => setAsking(false)} className="h-12 rounded-sm px-5 text-sm ring-1 ring-border hover:bg-jh-light">
           Keep the order
         </button>
       </div>

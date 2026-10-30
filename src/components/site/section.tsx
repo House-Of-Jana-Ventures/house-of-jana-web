@@ -25,11 +25,11 @@ export function SectionHeading({
     <div className={cn("max-w-2xl", align === "center" ? "mx-auto text-center" : "")}>
       {eyebrow ? (
         <Reveal>
-          <p className="text-xs font-semibold tracking-[0.25em] text-jh-deep uppercase">{eyebrow}</p>
+          <p className="eyebrow">{eyebrow}</p>
         </Reveal>
       ) : null}
       <Reveal delay={0.08}>
-        <h2 id={id} className="mt-3 text-3xl font-semibold sm:text-4xl md:text-[2.75rem] md:leading-tight">
+        <h2 id={id} className="mt-3 text-4xl font-medium sm:text-5xl md:leading-tight">
           {title}
         </h2>
       </Reveal>
@@ -43,7 +43,10 @@ export function SectionHeading({
   );
 }
 
-/** The top of an inner page: a soft photo banner, a label and the page title. */
+/**
+ * The top of an inner page: a photo under an even navy shade, with a small
+ * label, the page title and a line of text in white (phase J3).
+ */
 export function PageBanner({
   eyebrow,
   title,
@@ -56,7 +59,7 @@ export function PageBanner({
   image: string;
 }) {
   return (
-    <section className="relative isolate overflow-hidden">
+    <section className="relative isolate overflow-hidden bg-jh-navy text-white">
       {/* The photo slowly moves closer (a soft "Ken Burns"), unless less motion is preferred. */}
       <Image
         src={image}
@@ -66,17 +69,13 @@ export function PageBanner({
         sizes="100vw"
         className="-z-20 object-cover motion-safe:animate-[jh-zoom_24s_ease-out_forwards]"
       />
-      {/* Only a soft fade at the very bottom, where the banner meets the page. */}
-      <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-16 bg-gradient-to-b from-transparent to-jh-light" />
-      <div className="mx-auto max-w-6xl px-4 py-14 text-center sm:px-6 sm:py-24">
-        {/* The photo stays clear; the words sit on a soft frosted panel. */}
-        <Reveal className="mx-auto max-w-3xl rounded-[2rem] bg-white/80 px-6 py-8 shadow-2xl shadow-jh-navy/15 ring-1 ring-white/70 backdrop-blur-md sm:px-10 sm:py-10">
-          <p className="text-xs font-semibold tracking-[0.3em] text-jh-deep uppercase">{eyebrow}</p>
-          <h1 className="mx-auto mt-4 max-w-3xl text-4xl font-semibold sm:text-5xl md:text-6xl">{title}</h1>
+      <div aria-hidden className="absolute inset-0 -z-10 bg-jh-navy/65" />
+      <div className="mx-auto max-w-6xl px-4 py-20 text-center sm:px-6 sm:py-28">
+        <Reveal className="mx-auto max-w-3xl">
+          <p className="text-xs font-semibold tracking-[0.25em] text-white/80 uppercase">{eyebrow}</p>
+          <h1 className="mx-auto mt-4 max-w-3xl text-5xl font-medium sm:text-6xl">{title}</h1>
           {intro ? (
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              {intro}
-            </p>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/85 sm:text-lg">{intro}</p>
           ) : null}
         </Reveal>
       </div>

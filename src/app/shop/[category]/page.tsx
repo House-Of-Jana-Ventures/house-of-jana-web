@@ -88,7 +88,7 @@ async function CategoryContent({ params, searchParams }: PageProps<"/shop/[categ
                       aria-current={on ? "true" : undefined}
                       scroll={false}
                       className={cn(
-                        "rounded-full bg-white px-3.5 py-1.5 text-sm ring-1 ring-border transition-colors hover:ring-jh-bright",
+                        "rounded-sm bg-white px-3.5 py-1.5 text-sm ring-1 ring-border transition-colors hover:ring-jh-bright",
                         on && "bg-jh-bright font-semibold text-jh-navy ring-jh-bright",
                       )}
                     >
@@ -104,7 +104,7 @@ async function CategoryContent({ params, searchParams }: PageProps<"/shop/[categ
                 aria-current={available ? "true" : undefined}
                 scroll={false}
                 className={cn(
-                  "rounded-full bg-white px-3.5 py-1.5 ring-1 ring-border hover:ring-jh-bright",
+                  "rounded-sm bg-white px-3.5 py-1.5 ring-1 ring-border hover:ring-jh-bright",
                   available && "bg-jh-bright font-semibold ring-jh-bright",
                 )}
               >

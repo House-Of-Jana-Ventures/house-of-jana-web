@@ -39,7 +39,7 @@ export function Testimonials() {
       onBlur={() => setPaused(false)}
       className="mx-auto mt-12 max-w-3xl"
     >
-      <div className="relative overflow-hidden rounded-[2rem] bg-white px-6 py-10 shadow-sm ring-1 ring-border sm:px-12 sm:py-12">
+      <div className="relative overflow-hidden rounded-md bg-white px-6 py-10 shadow-sm ring-1 ring-border sm:px-12 sm:py-12">
         <Quote aria-hidden className="absolute top-6 left-6 size-10 text-jh-bright/25" />
         <div aria-live={paused ? "polite" : "off"} className="min-h-64 sm:min-h-52">
           <AnimatePresence mode="wait" initial={false}>

@@ -99,10 +99,13 @@ test("a link with ?v= opens that variant; unknown products are not found", async
   await expect(page.getByText(/couldn.t find that page/i)).toBeVisible();
 });
 
-test("the range page links into the shop", async ({ page }) => {
-  await page.goto("/products");
-  await page.getByRole("link", { name: "Shop Weft" }).click();
-  await expect(page).toHaveURL(/\/shop\/wefts$/);
+test("the home page shows the shop's own products, and the footer its categories", async ({ page }) => {
+  await page.goto("/");
+  const footer = page.getByRole("contentinfo");
+  await expect(footer.getByRole("link", { name: "Shop all" })).toHaveAttribute("href", "/shop");
+  await expect(footer.getByRole("link", { name: "Hair extensions" })).toHaveAttribute("href", "/shop/hair-extensions");
+  await page.getByRole("region", { name: "Shop our hair" }).getByRole("link", { name: /Bulk hair/ }).click();
+  await expect(page).toHaveURL(/\/shop\/p\/bulk-hair$/);
 });
 
 test("shop pages are kept out of search engines until launch, and pass the accessibility check", async ({ page }) => {

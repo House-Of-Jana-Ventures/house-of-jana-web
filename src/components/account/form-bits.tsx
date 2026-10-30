@@ -82,7 +82,7 @@ export function FormNote({ state }: { state: FormState }) {
 export function SubmitButton({ children, className }: { children: ReactNode; className?: string }) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} aria-busy={pending} className={cn("h-12 rounded-full px-6 text-base", className)}>
+    <Button type="submit" disabled={pending} aria-busy={pending} className={cn("h-12 rounded-sm px-6 text-base", className)}>
       {pending ? <Loader2 aria-hidden className="animate-spin" /> : null}
       {children}
     </Button>

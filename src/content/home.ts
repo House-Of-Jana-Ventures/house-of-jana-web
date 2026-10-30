@@ -1,9 +1,48 @@
 /** The home page's text, from janahumanhair.com (2026-10-09), lightly tidied. */
-export const hero = {
-  eyebrow: "Natural human hair · Five decades of craft",
-  title: "From the heart of Midnapore to the world",
-  text: "Jana Human Hair blends tradition and craftsmanship to create the finest natural human hair products.",
-};
+/**
+ * The home page's banner slides (phase J3, owner's text and photos,
+ * 2026-10-30). `side` is where the words sit on a large screen: on the
+ * photo's empty side (the photo goes to the other side).
+ */
+export interface Slide {
+  title: string;
+  text: string;
+  image: string;
+  alt: string;
+  side: "left" | "right";
+}
+
+export const slides: Slide[] = [
+  {
+    title: "The Art of Beautiful Hair",
+    text: "Experience exceptional hair quality with extensions designed for a flawless, natural-looking finish.",
+    image: "/images/hero/art-of-beautiful-hair.webp",
+    alt: "A woman with long, dark, glossy hair in a blue dress, looking back over her shoulder",
+    side: "right",
+  },
+  {
+    title: "More Volume. More Confidence.",
+    text: "Enhance your natural beauty with premium hair extensions made for a seamless blend and beautiful transformation.",
+    image: "/images/hero/more-volume.webp",
+    alt: "A smiling woman with long, full, dark hair in a blue dress",
+    side: "left",
+  },
+  {
+    title: "Crafted for a Natural Finish",
+    text: "Explore beautifully crafted hair extensions with realistic textures, premium quality and a seamless finish.",
+    image: "/images/hero/natural-finish.webp",
+    alt: "A woman running her hand through her long, dark hair",
+    side: "left",
+  },
+  {
+    title: "Experience the Beauty of Premium Hair",
+    text: "Discover exceptional hair extensions that bring together natural movement, beautiful volume and uncompromising quality.",
+    image: "/images/hero/premium-hair.webp",
+    alt: "Three women with long, flowing dark hair in green, blue and cream dresses",
+    side: "left",
+  },
+];
+
 
 export const stats = [
   { value: 50, suffix: "+", label: "years of craftsmanship" },
@@ -27,16 +66,56 @@ export const story = {
   ],
 };
 
-export const whyUs = {
-  title: "Why businesses choose us",
+/** The thin line under the hero: short reasons to trust the shop (phase J3). */
+export const trust = [
+  { icon: "globe", text: "Shipped across India and worldwide" },
+  { icon: "card", text: "UPI, cards and net banking" },
+  { icon: "bank", text: "Bank transfer for bulk orders" },
+  { icon: "hand", text: "Handcrafted in Midnapore" },
+] as const;
+
+/** "The Jana standard": the navy band with a short checklist. */
+export const standard = {
+  title: "The Jana standard",
+  intro: "Natural human hair, sorted and drawn by hand, the way our family has done it for five decades.",
   points: [
+    "100% natural human hair, from Non-Remy double drawn to Virgin Remy single drawn",
+    "Hand-sorted and drawn by skilled artisans in Purba Midnapore",
+    "Sustainable, responsible sourcing",
+    "Fair wages and good working conditions for everyone involved",
+    "Trusted by wig makers, extension brands and salons on four continents",
+  ],
+};
+
+/** How ordering works, in four numbered steps. */
+export const steps = {
+  title: "How ordering works",
+  intro: "Simple, whether you need one bundle or a full shipment.",
+  items: [
+    { title: "Choose your hair", text: "Pick the type, texture and length. Every product shows both of its prices." },
+    { title: "Bulk price, automatically", text: "From a set number of pieces of one product, the lower bulk price applies on its own." },
+    { title: "Pay your way", text: "Pay online with UPI, cards or net banking, or by bank transfer." },
+    { title: "We ship to you", text: "Packed in Midnapore and sent to you, anywhere in India or abroad." },
+  ],
+};
+
+/** The trade banner, for businesses buying in quantity. */
+export const trade = {
+  title: "Buying for a salon or a wig business?",
+  text: "Tell us the textures, lengths, colours and quantities you need, and we'll send you a quote.",
+};
+
+/** "About Jana hair": a short explainer for customers (and search engines). */
+export const explainer = {
+  title: "Understanding human hair",
+  parts: [
     {
-      title: "Five decades of quality",
-      text: "For over fifty years, Jana Human Hair has produced some of the finest human hair in the industry. Our products are handcrafted by skilled artisans and sourced ethically from communities across India and South-East Asia, to standards that exceed the industry's.",
+      title: "Remy and Non-Remy",
+      text: "Remy hair comes from a single donor, with every cuticle intact and running in one direction, so it stays smooth and tangle-free for longer. Non-Remy hair is collected from several sources and processed to align the strands: a more affordable choice with a full, polished finish.",
     },
     {
-      title: "Made for your business",
-      text: "Every business has its own needs. Whether you need specific textures, colours or volumes, we take bulk orders and tailor solutions for customers in every market: from Non-Remy double drawn and single drawn hair to wefts of all sizes, colours and textures for wigs and extensions.",
+      title: "Single drawn and double drawn",
+      text: "Single drawn hair keeps its natural mix of lengths, for a soft, tapered look. In double drawn hair the shorter strands are removed, so it's thick and full from root to tip.",
     },
   ],
 };

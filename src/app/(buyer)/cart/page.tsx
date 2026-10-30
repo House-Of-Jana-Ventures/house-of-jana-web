@@ -64,7 +64,7 @@ async function CartContent({ searchParams }: PageProps<"/cart">) {
         <div className="flex flex-col items-center gap-4 rounded-3xl bg-white p-10 text-center ring-1 ring-border">
           <ShoppingBag aria-hidden className="size-10 text-jh-deep" strokeWidth={1.5} />
           <p className="text-lg">Your cart is empty.</p>
-          <Link href="/shop" className="rounded-full bg-jh-bright px-6 py-3 font-semibold text-jh-navy hover:bg-jh-bright/85">
+          <Link href="/shop" className="rounded-sm bg-jh-bright px-6 py-3 font-semibold text-jh-navy hover:bg-jh-bright/85">
             Browse the shop
           </Link>
         </div>
@@ -94,7 +94,7 @@ async function CartContent({ searchParams }: PageProps<"/cart">) {
         {cart.readyForCheckout ? (
           <Link
             href="/checkout"
-            className="mt-5 flex h-12 items-center justify-center rounded-full bg-jh-bright font-semibold text-jh-navy hover:bg-jh-bright/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jh-navy"
+            className="mt-5 flex h-12 items-center justify-center rounded-sm bg-jh-bright font-semibold text-jh-navy hover:bg-jh-bright/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jh-navy"
           >
             Checkout
           </Link>

@@ -26,7 +26,7 @@ export default function PasswordPage() {
           <form action={signOutEverywhere}>
             <button
               type="submit"
-              className="rounded-full px-5 py-2.5 text-sm font-semibold ring-1 ring-border hover:bg-destructive/10 hover:text-destructive"
+              className="rounded-sm px-5 py-2.5 text-sm font-semibold ring-1 ring-border hover:bg-destructive/10 hover:text-destructive"
             >
               Sign out everywhere
             </button>
