@@ -2,7 +2,8 @@
 /**
  * The home page's banner slides (phase J3, owner's text and photos,
  * 2026-10-30). `side` is where the words sit on a large screen: on the
- * photo's empty side (the photo goes to the other side).
+ * photo's empty side (the photo goes to the other side). `narrow`: the photo
+ * has less empty room, so the words take a narrower column.
  */
 export interface Slide {
   title: string;
@@ -10,15 +11,18 @@ export interface Slide {
   image: string;
   alt: string;
   side: "left" | "right";
+  narrow?: boolean;
 }
 
+// In the owner's order (2026-10-30): the three women first.
 export const slides: Slide[] = [
   {
-    title: "The Art of Beautiful Hair",
-    text: "Experience exceptional hair quality with extensions designed for a flawless, natural-looking finish.",
-    image: "/images/hero/art-of-beautiful-hair.webp",
-    alt: "A woman with long, dark, glossy hair in a blue dress, looking back over her shoulder",
-    side: "right",
+    title: "Experience the Beauty of Premium Hair",
+    text: "Discover exceptional hair extensions that bring together natural movement, beautiful volume and uncompromising quality.",
+    image: "/images/hero/premium-hair.webp",
+    alt: "Three women with long, flowing dark hair in green, blue and cream dresses",
+    side: "left",
+    narrow: true,
   },
   {
     title: "More Volume. More Confidence.",
@@ -28,21 +32,20 @@ export const slides: Slide[] = [
     side: "left",
   },
   {
+    title: "The Art of Beautiful Hair",
+    text: "Experience exceptional hair quality with extensions designed for a flawless, natural-looking finish.",
+    image: "/images/hero/art-of-beautiful-hair.webp",
+    alt: "A woman with long, dark, glossy hair in a blue dress, looking back over her shoulder",
+    side: "right",
+  },
+  {
     title: "Crafted for a Natural Finish",
     text: "Explore beautifully crafted hair extensions with realistic textures, premium quality and a seamless finish.",
     image: "/images/hero/natural-finish.webp",
     alt: "A woman running her hand through her long, dark hair",
     side: "left",
   },
-  {
-    title: "Experience the Beauty of Premium Hair",
-    text: "Discover exceptional hair extensions that bring together natural movement, beautiful volume and uncompromising quality.",
-    image: "/images/hero/premium-hair.webp",
-    alt: "Three women with long, flowing dark hair in green, blue and cream dresses",
-    side: "left",
-  },
 ];
-
 
 export const stats = [
   { value: 50, suffix: "+", label: "years of craftsmanship" },

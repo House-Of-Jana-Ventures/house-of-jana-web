@@ -89,9 +89,11 @@ export function Hero() {
                     slide.side === "right" && "lg:justify-end",
                   )}
                 >
-                  <div className="max-w-md lg:max-w-sm xl:max-w-md">
-                    <h2 className="text-4xl leading-[1.05] font-medium sm:text-5xl">{slide.title}</h2>
-                    <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">{slide.text}</p>
+                  <div className={cn("max-w-md", slide.narrow ? "lg:max-w-[22rem] xl:max-w-[25rem]" : "xl:max-w-[30rem]")}>
+                    <h2 className="text-4xl leading-[1.05] font-medium sm:text-5xl lg:text-[3.25rem] xl:text-6xl">
+                      {slide.title}
+                    </h2>
+                    <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg xl:text-xl">{slide.text}</p>
                     <div className="mt-7 flex flex-wrap gap-3">
                       <Link href="/shop" className="btn-line bg-white/70 text-jh-navy">
                         Shop hair

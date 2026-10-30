@@ -116,7 +116,7 @@ test("the home banner moves every 3 seconds, stops under the pointer, and the do
   const banner = page.getByRole("region", { name: "Jana Human Hair", exact: true });
   // Only the slide on show is visible to screen readers and the keyboard.
   const title = banner.getByRole("heading", { level: 2 });
-  await expect(title).toHaveText("The Art of Beautiful Hair");
+  await expect(title).toHaveText("Experience the Beauty of Premium Hair");
   await page.clock.runFor(3_200);
   await expect(title).toHaveText("More Volume. More Confidence.");
 
@@ -126,12 +126,12 @@ test("the home banner moves every 3 seconds, stops under the pointer, and the do
   await expect(title).toHaveText("More Volume. More Confidence.");
   await page.mouse.move(5, page.viewportSize()!.height - 5);
   await page.clock.runFor(3_200);
-  await expect(title).toHaveText("Crafted for a Natural Finish");
+  await expect(title).toHaveText("The Art of Beautiful Hair");
 
   // No arrows or pause button; the dots choose a slide.
   await expect(banner.getByRole("button", { name: /Next|Previous|Pause|Play/ })).toHaveCount(0);
   await banner.getByRole("button", { name: /^Show slide 4/ }).click();
-  await expect(title).toHaveText("Experience the Beauty of Premium Hair");
+  await expect(title).toHaveText("Crafted for a Natural Finish");
   await expect(banner.getByRole("button", { name: /^Show slide 4/ })).toHaveAttribute("aria-current", "true");
 });
 
