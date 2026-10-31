@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import type React from "react";
 import { forgotPassword, register, resetPassword, signIn } from "@/lib/session/actions";
 import { EMPTY } from "@/lib/shop/messages";
 import { Field, FormNote, SubmitButton } from "./form-bits";
@@ -48,30 +49,54 @@ export function SignInForm(carry: Carry) {
   );
 }
 
+/** A numbered part of the sign-up form (owner's design, phase J4). */
+function Step({ n, title, aside, children }: { n: number; title: string; aside?: string; children: React.ReactNode }) {
+  return (
+    <fieldset className="flex flex-col gap-4">
+      <legend className="mb-4 flex w-full flex-wrap items-center justify-between gap-2">
+        <span className="flex items-center gap-2">
+          <span aria-hidden className="flex size-7 items-center justify-center rounded-full bg-jh-deep text-xs font-bold text-white">
+            {n}
+          </span>
+          <span className="text-lg font-bold text-jh-navy">{title}</span>
+        </span>
+        {aside ? <span className="text-xs text-muted-foreground">{aside}</span> : null}
+      </legend>
+      {children}
+    </fieldset>
+  );
+}
+
 export function RegisterForm(carry: Carry) {
   const [state, action] = useActionState(register, EMPTY);
   return (
-    <form action={action} className="flex flex-col gap-4">
+    <form action={action} className="flex flex-col gap-8">
       <Hidden {...carry} />
       <FormNote state={state} />
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field name="firstName" label="First name" autoComplete="given-name" state={state} />
-        <Field name="lastName" label="Last name" autoComplete="family-name" optional state={state} />
-      </div>
-      <Field name="email" label="Email" type="email" autoComplete="email" inputMode="email" state={state} />
-      <Field
-        name="phone"
-        label="Phone"
-        type="tel"
-        autoComplete="tel"
-        inputMode="tel"
-        state={state}
-        hint="An Indian mobile, or another number with its country code (e.g. +971 50 123 4567)."
-      />
-      <Field name="companyName" label="Company" autoComplete="organization" optional state={state} />
-      <Field name="password" label="Password" type="password" autoComplete="new-password" state={state} hint={PASSWORD_HINT} />
-      <Field name="confirmPassword" label="Password again" type="password" autoComplete="new-password" state={state} />
-      <SubmitButton>Create account</SubmitButton>
+      <Step n={1} title="You and your business" aside="Company and last name are optional">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field name="firstName" label="First name" autoComplete="given-name" state={state} />
+          <Field name="lastName" label="Last name" autoComplete="family-name" optional state={state} />
+          <Field name="email" label="Email" type="email" autoComplete="email" inputMode="email" state={state} />
+          <Field
+            name="phone"
+            label="Phone"
+            type="tel"
+            autoComplete="tel"
+            inputMode="tel"
+            state={state}
+            hint="An Indian mobile, or another number with its country code (e.g. +971 50 123 4567)."
+          />
+        </div>
+        <Field name="companyName" label="Company" autoComplete="organization" optional state={state} />
+      </Step>
+      <Step n={2} title="Choose a password">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field name="password" label="Password" type="password" autoComplete="new-password" state={state} hint={PASSWORD_HINT} />
+          <Field name="confirmPassword" label="Password again" type="password" autoComplete="new-password" state={state} />
+        </div>
+      </Step>
+      <SubmitButton className="w-full bg-jh-navy text-white hover:bg-jh-deep">Create account</SubmitButton>
       <p className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}
         <Link href={`/sign-in${carried(carry)}`} className="font-semibold text-jh-deep hover:underline">

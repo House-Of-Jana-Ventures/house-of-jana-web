@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { AuthCard } from "@/components/account/auth-card";
+import { AuthSplit, carriedQuery } from "@/components/account/auth-split";
 import { SignInForm } from "@/components/account/auth-forms";
 import { parsePendingAdd } from "@/lib/session/pending-add";
 
@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Sign in" };
 
 export default function SignInPage(props: PageProps<"/sign-in">) {
   return (
-    <Suspense fallback={<AuthCard title="Sign in">{null}</AuthCard>}>
+    <Suspense fallback={<AuthSplit active="sign-in" query="" title="Sign in">{null}</AuthSplit>}>
       <SignIn {...props} />
     </Suspense>
   );
@@ -20,7 +20,9 @@ async function SignIn({ searchParams }: PageProps<"/sign-in">) {
   const add = parsePendingAdd(one(params.add)) ? one(params.add) : "";
   const note = one(params.note);
   return (
-    <AuthCard
+    <AuthSplit
+      active="sign-in"
+      query={carriedQuery(one(params.next), add)}
       title="Sign in"
       intro={
         note === "password-changed" ? (
@@ -39,6 +41,6 @@ async function SignIn({ searchParams }: PageProps<"/sign-in">) {
       }
     >
       <SignInForm next={one(params.next)} add={add} />
-    </AuthCard>
+    </AuthSplit>
   );
 }
