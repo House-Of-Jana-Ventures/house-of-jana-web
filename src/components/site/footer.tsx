@@ -34,17 +34,25 @@ export async function Footer() {
   return (
     <footer className="mt-auto bg-jh-navy text-white">
       <div className="mx-auto max-w-6xl px-4 pt-14 pb-10 sm:px-6">
-        <div className="flex flex-col gap-6 border-b border-white/10 pb-10 sm:flex-row sm:items-center sm:justify-between">
-          <div className="inline-flex self-start rounded-sm bg-white px-4 py-2">
-            <Image src="/images/logo-strong.png" alt="Jana Human Hair" width={317} height={140} className="h-12 w-auto" />
+        <div className="grid gap-10 border-b border-white/10 pb-12 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1.5fr]">
+          {/* The brand: logo, a few words and true promises (owner's design, phase J4). */}
+          <div className="flex flex-col gap-4 sm:col-span-2 lg:col-span-1">
+            <div className="inline-flex self-start rounded-lg bg-white px-4 py-2">
+              <Image src="/images/logo-strong.png" alt="Jana Human Hair" width={317} height={140} className="h-12 w-auto" />
+            </div>
+            <p className="text-xs font-bold tracking-[0.15em] text-jh-bright uppercase">Purba Midnapore, West Bengal · India</p>
+            <p className="max-w-md text-sm leading-relaxed text-white/75">
+              Natural human hair, handcrafted in Purba Midnapore for five decades and exported across four
+              continents, for wig makers, extension brands and salons. A unit of {site.legalName}
+            </p>
+            <ul className="flex flex-wrap gap-2 pt-1">
+              {["Temple-sourced hair", "Custom bleaching", "Private labelling"].map((badge) => (
+                <li key={badge} className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white">
+                  {badge}
+                </li>
+              ))}
+            </ul>
           </div>
-          <p className="max-w-md text-sm leading-relaxed text-white/75">
-            Natural human hair, handcrafted in Purba Midnapore, West Bengal, and exported across four
-            continents. A unit of {site.legalName}
-          </p>
-        </div>
-
-        <div className="grid gap-10 pt-10 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1.4fr]">
           <Column title="Shop">
             <li>
               <Link href="/shop" className={LINK}>

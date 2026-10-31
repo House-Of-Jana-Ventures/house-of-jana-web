@@ -33,15 +33,21 @@ export const site = {
 export const announcements = [
   "100% natural human hair, handcrafted in Midnapore",
   "Lower bulk prices on every product",
-  "We ship across India and worldwide",
+  "Shipped across India and to 4 continents",
 ] as const;
 
-/** The main menu. "Contact" opens the contact form (there's no Contact page). */
-export const nav = [
+/**
+ * The main menu. "Contact" opens the contact form (there's no Contact page).
+ * Links with # go to a section of the home page; `wide` ones show from
+ * large screens up (and always in the phone menu).
+ */
+export const nav: readonly { label: string; href: string; wide?: boolean }[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Products", href: "/shop" },
-] as const;
+  { label: "Bulk & wholesale", href: "/#quick-rfq" },
+  { label: "Hair education", href: "/#hair-education", wide: true },
+];
 
 /** "+91 80176 79521" → "tel:+918017679521". */
 export const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, "")}`;

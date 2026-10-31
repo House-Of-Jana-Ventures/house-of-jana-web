@@ -83,7 +83,7 @@
   --chart-3: var(--jh-navy);
   --chart-4: #7fd3f1;
   --chart-5: #35506b;
-  --radius: 0.375rem; /* small, clean corners (phase J3) */
+  --radius: 0.5rem; /* the owner's design (phase J4) */
   --sidebar: #ffffff;
   --sidebar-foreground: var(--jh-navy);
   --sidebar-primary: var(--jh-bright);

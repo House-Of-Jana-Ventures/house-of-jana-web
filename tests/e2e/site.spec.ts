@@ -2,7 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 const PAGES = [
-  { path: "/", heading: "Jana Human Hair: natural human hair extensions from Midnapore" },
+  { path: "/", heading: "Crafted for a Natural Finish" },
   { path: "/about", heading: "About Jana Human Hair" },
 ];
 
@@ -82,14 +82,22 @@ test("what was typed survives the server's checks", async ({ page }) => {
   await expect(form.getByLabel("Company")).toHaveValue("Silk Hair Co.");
 });
 
-test("Bulk enquiry fills in the message; Escape closes", async ({ page }) => {
+test("the bulk quote form checks, then sends the choices to the inbox and thanks", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Bulk enquiry" }).click();
-  await expect(dialog(page).getByLabel("How can we help?")).toHaveValue(
-    "I'd like to know more about bulk orders. ",
-  );
-  await page.keyboard.press("Escape");
-  await expect(dialog(page)).toBeHidden();
+  const desk = page.getByRole("region", { name: "Buying for a salon or a wig business?" });
+  await desk.getByRole("button", { name: "Send my quote request" }).click();
+  await expect(desk.getByText("Please enter your name.")).toBeVisible();
+
+  await desk.getByRole("button", { name: "Wavy" }).click();
+  await expect(desk.getByRole("button", { name: "Wavy" })).toHaveAttribute("aria-pressed", "true");
+  await desk.getByLabel("Deliver to (city, country)").fill("London, UK");
+  await desk.getByLabel("Your name").fill("Mei Ling");
+  await desk.getByLabel("Company / salon").fill("Silk Hair Co.");
+  await desk.getByLabel("Email").fill("mei@example.com");
+  await desk.getByLabel("Phone / WhatsApp").fill("+86 138 0013 8000");
+  await desk.getByRole("button", { name: "Send my quote request" }).click();
+  await expect(desk.getByText("Thank you!")).toBeVisible();
+  await expect(desk.getByRole("status")).toContainText("reply within 2 hours");
 });
 
 test("old WordPress addresses redirect; /contact opens the form", async ({ page }) => {
@@ -109,38 +117,41 @@ test("old WordPress addresses redirect; /contact opens the form", async ({ page 
   expect(missing?.status()).toBe(404);
 });
 
-test("the home banner moves every 3 seconds, stops under the pointer, and the dots choose a slide", async ({ page }) => {
-  await page.clock.install();
+test("the hair-type card switches between Virgin Remy, Non-Remy and Raw Temple", async ({ page }) => {
   await page.goto("/");
-  await page.waitForLoadState("networkidle");
-  const banner = page.getByRole("region", { name: "Jana Human Hair", exact: true });
-  // Only the slide on show is visible to screen readers and the keyboard.
-  const title = banner.getByRole("heading", { level: 2 });
-  await expect(title).toHaveText("Experience the Beauty of Premium Hair");
-  await page.clock.runFor(3_200);
-  await expect(title).toHaveText("More Volume. More Confidence.");
-
-  // The pointer on it: it stops. Off it: it carries on.
-  await banner.hover();
-  await page.clock.runFor(10_000);
-  await expect(title).toHaveText("More Volume. More Confidence.");
-  await page.mouse.move(5, page.viewportSize()!.height - 5);
-  await page.clock.runFor(3_200);
-  await expect(title).toHaveText("The Art of Beautiful Hair");
-
-  // No arrows or pause button; the dots choose a slide.
-  await expect(banner.getByRole("button", { name: /Next|Previous|Pause|Play/ })).toHaveCount(0);
-  await banner.getByRole("button", { name: /^Show slide 4/ }).click();
-  await expect(title).toHaveText("Crafted for a Natural Finish");
-  await expect(banner.getByRole("button", { name: /^Show slide 4/ })).toHaveAttribute("aria-current", "true");
+  const tabs = page.getByRole("tablist", { name: "Kinds of hair" });
+  const panel = page.getByRole("tabpanel");
+  await expect(panel).toContainText("Virgin Remy Single Drawn");
+  await tabs.getByRole("tab", { name: "Non-Remy" }).click();
+  await expect(tabs.getByRole("tab", { name: "Non-Remy" })).toHaveAttribute("aria-selected", "true");
+  await expect(panel).toContainText("Non-Remy Double Drawn");
+  await tabs.getByRole("tab", { name: "Raw Temple" }).click();
+  await expect(panel).toContainText("Temple, single donor");
 });
 
-test("testimonials move with the arrows", async ({ page }) => {
+test("the bulk price estimator uses the shop's real rule: single below the minimum, bulk from it", async ({ page }) => {
   await page.goto("/");
-  const carousel = page.getByRole("group", { name: "What our customers say" });
-  await expect(carousel.getByText("Mei Ling")).toBeVisible();
-  await carousel.getByRole("button", { name: "Next review" }).click();
-  await expect(carousel.getByText("Emily Roberts")).toBeVisible();
+  const estimator = page.getByRole("region", { name: "How ordering works" });
+  const product = estimator.getByLabel("Product");
+  await product.selectOption((await product.locator("option", { hasText: "Bulk hair" }).getAttribute("value"))!);
+  const output = estimator.locator("output");
+  // It starts at the product's bulk minimum.
+  const min = Number((await output.textContent())!.match(/\d+/)![0]);
+  const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
+  await expect(estimator.getByText("from ₹5,200", { exact: true })).toBeVisible();
+  await expect(estimator.getByText(`from ${inr(min * 5200)}`, { exact: true })).toBeVisible();
+  // One fewer: the single price.
+  await estimator.getByLabel("Quantity").focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(output).toHaveText(`${min - 1} pieces`);
+  await expect(estimator.getByText("Single price · 1 more for bulk")).toBeVisible();
+  await expect(estimator.getByText(`from ${inr((min - 1) * 6000)}`, { exact: true })).toBeVisible();
+});
+
+test("three customers' words show as cards", async ({ page }) => {
+  await page.goto("/");
+  const reviews = page.getByRole("region", { name: "What our customers say" });
+  for (const name of ["Mei Ling", "Emily Roberts", "Sophia Klein"]) await expect(reviews.getByText(name)).toBeVisible();
 });
 
 test.describe("with reduced motion", () => {
@@ -149,7 +160,7 @@ test.describe("with reduced motion", () => {
     await page.goto("/");
     await expect(page.getByText("Story of Jana Human Hair")).toBeVisible();
     await expect(page.getByText("years of craftsmanship").last()).toBeVisible();
-    await expect(page.locator("dd").first()).toContainText("50+");
+    await expect(page.locator("section[aria-labelledby=story-heading] dd").first()).toContainText("50+");
   });
 });
 
@@ -298,7 +309,7 @@ test("required fields are starred, and WhatsApp is offered as another way", asyn
 
 test("numbers and sections still show after visiting another page and coming back", async ({ page }) => {
   await page.goto("/");
-  const stats = page.locator("main dd span[aria-hidden]");
+  const stats = page.locator("section[aria-labelledby=story-heading] dd span[aria-hidden]");
   // The numbers sit in the story section and count up once scrolled into view.
   await stats.first().scrollIntoViewIfNeeded();
   await expect(stats.first()).toHaveText("50+", { timeout: 5_000 });

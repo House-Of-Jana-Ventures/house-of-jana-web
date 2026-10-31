@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Geist } from "next/font/google";
+import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { Suspense } from "react";
 import { ContactProvider } from "@/components/contact/contact-context";
 import { ContactWidget } from "@/components/contact/contact-widget";
@@ -9,12 +9,13 @@ import { HeaderFallback, SiteHeader } from "@/components/site/site-header";
 import { site } from "@/content/site";
 import "./globals.css";
 
-const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-// A thin, elegant serif for headings (phase J3).
-const display = Cormorant_Garamond({
+// The owner's design (phase J4): Plus Jakarta Sans for text, Playfair Display for headings.
+const sans = Plus_Jakarta_Sans({ variable: "--font-geist-sans", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+const display = Playfair_Display({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {

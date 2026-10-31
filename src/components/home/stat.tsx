@@ -8,11 +8,22 @@ import CountUp from "@/components/reactbits/CountUp";
  * Screen readers and visitors without JavaScript get the number itself;
  * reduced motion shows it without counting.
  */
-export function Stat({ value, suffix, label }: { value: number; suffix: string; label: string }) {
+export function Stat({
+  value,
+  suffix,
+  label,
+  tone = "dark",
+}: {
+  value: number;
+  suffix: string;
+  label: string;
+  /** "light": for the navy band. */
+  tone?: "dark" | "light";
+}) {
   const reduced = useReducedMotion();
   return (
     <div className="flex flex-col">
-      <span className="font-heading text-4xl font-semibold text-jh-navy sm:text-5xl">
+      <span className={`font-heading text-4xl font-semibold sm:text-5xl ${tone === "light" ? "text-jh-bright" : "text-jh-navy"}`}>
         <span className="sr-only">
           {value}
           {suffix}
@@ -23,7 +34,7 @@ export function Stat({ value, suffix, label }: { value: number; suffix: string; 
           {suffix}
         </span>
       </span>
-      <span className="mt-1 text-sm leading-snug text-muted-foreground">{label}</span>
+      <span className={`mt-1 text-sm leading-snug ${tone === "light" ? "text-white/70" : "text-muted-foreground"}`}>{label}</span>
     </div>
   );
 }

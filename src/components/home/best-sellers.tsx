@@ -11,7 +11,7 @@ export async function BestSellers() {
   const items = page?.items.slice(0, 4) ?? [];
   if (items.length === 0) return null;
   return (
-    <section aria-labelledby="sellers-heading" className="py-16 sm:py-20">
+    <section aria-labelledby="sellers-heading" className="bg-white py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>

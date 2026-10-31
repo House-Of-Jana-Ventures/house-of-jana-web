@@ -2,20 +2,38 @@
 
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { MenuCategory } from "@/lib/shop/types";
 import { cn } from "@/lib/utils";
 
 /**
  * The header's "Products" item: a panel with every category and its
- * products on sale, plus "Shop all" and the range page. Opens on click (and
- * hover with a mouse), closes on Escape, outside clicks and navigation.
+ * products on sale, plus "Shop all". Opens on click (and hover with a
+ * mouse), closes on Escape, outside clicks and navigation. The panel is
+ * centred under the button but kept inside the screen.
  */
 export function ProductsMenu({ menu, current }: { menu: MenuCategory[]; current: boolean }) {
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
   const panelId = useId();
+  const [offset, setOffset] = useState(0);
+
+  // Centre the panel under the button, but never past either edge of the screen.
+  useLayoutEffect(() => {
+    if (!open) return;
+    const place = () => {
+      const rect = box.current?.getBoundingClientRect();
+      if (!rect) return;
+      const screen = document.documentElement.clientWidth;
+      const width = Math.min(736, screen - 32);
+      const left = Math.min(Math.max(rect.left + rect.width / 2 - width / 2, 16), screen - 16 - width);
+      setOffset(left - rect.left);
+    };
+    place();
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -64,7 +82,8 @@ export function ProductsMenu({ menu, current }: { menu: MenuCategory[]; current:
       <div
         id={panelId}
         hidden={!open}
-        className="absolute top-full right-0 z-40 pt-3"
+        className="absolute top-full z-40 pt-3"
+        style={{ left: offset }}
       >
         <div className="w-[min(46rem,calc(100vw-2rem))] rounded-3xl bg-white p-6 shadow-2xl shadow-jh-navy/15 ring-1 ring-border motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2">
           {menu.length > 0 ? (

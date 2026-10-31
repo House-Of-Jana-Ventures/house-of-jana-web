@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { FileText, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,9 +35,7 @@ export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?
   }, []);
 
   const isCurrent = (href: string) =>
-    href === "/"
-      ? pathname === "/"
-      : pathname.startsWith(href);
+    href === "/" ? pathname === "/" : !href.includes("#") && pathname.startsWith(href);
 
   return (
     <header
@@ -64,7 +62,7 @@ export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?
         <nav aria-label="Main" className="ml-auto hidden md:block">
           <ul className="flex items-center gap-1">
             {nav.map((item) => (
-              <li key={item.href}>
+              <li key={item.href} className={item.wide ? "hidden lg:block" : undefined}>
                 {item.href === "/shop" ? (
                   <ProductsMenu menu={menu} current={isCurrent(item.href)} />
                 ) : (
@@ -92,6 +90,13 @@ export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?
         >
           Contact us
         </button>
+        <Link
+          href="/#quick-rfq"
+          className="hidden h-10 items-center gap-1.5 rounded-lg bg-jh-navy px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-jh-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jh-bright xl:inline-flex"
+        >
+          <FileText aria-hidden className="size-4" />
+          Request bulk quote
+        </Link>
         <div className="ml-auto flex items-center md:ml-0">{account}</div>
 
         <Sheet open={menuOpen} onOpenChange={setMenuOpen}>

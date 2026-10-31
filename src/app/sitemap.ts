@@ -4,7 +4,7 @@ import { getMenu } from "@/lib/shop/api";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // The shop's pages are listed below, once it's open to search engines.
-  const pages: MetadataRoute.Sitemap = nav.filter((item) => item.href !== "/shop").map((item) => ({
+  const pages: MetadataRoute.Sitemap = nav.filter((item) => item.href !== "/shop" && !item.href.includes("#")).map((item) => ({
     url: new URL(item.href, site.url).toString(),
     changeFrequency: "monthly",
     priority: item.href === "/" ? 1 : 0.8,
