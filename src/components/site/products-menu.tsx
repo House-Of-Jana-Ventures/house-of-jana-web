@@ -71,7 +71,7 @@ export function ProductsMenu({ menu, current }: { menu: MenuCategory[]; current:
         aria-controls={panelId}
         onClick={() => setOpen((o) => !o)}
         className={cn(
-          "relative flex items-center gap-1 px-3 py-2 text-sm text-jh-navy/75 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright",
+          "relative flex items-center gap-1 whitespace-nowrap px-2.5 py-2 text-sm text-jh-navy/75 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright",
           "after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-jh-navy after:transition-transform after:duration-300 hover:after:scale-x-100",
           current && "text-jh-navy after:scale-x-100",
         )}

@@ -42,7 +42,7 @@ export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?
         scrolled && "shadow-sm shadow-jh-navy/5",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 xl:gap-4">
         <Link
           href="/"
           className="shrink-0 rounded-md focus-visible:outline-2 focus-visible:outline-jh-bright"
@@ -57,10 +57,10 @@ export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?
           />
         </Link>
 
-        <nav aria-label="Main" className="ml-auto hidden md:block">
-          <ul className="flex items-center gap-1">
+        <nav aria-label="Main" className="ml-auto hidden lg:block">
+          <ul className="flex items-center gap-0.5">
             {nav.map((item) => (
-              <li key={item.href} className={item.wide ? "hidden lg:block" : undefined}>
+              <li key={item.href} className={item.wide ? "hidden xl:block" : undefined}>
                 {item.href === "/shop" ? (
                   <ProductsMenu menu={menu} current={isCurrent(item.href)} />
                 ) : (
@@ -68,7 +68,7 @@ export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?
                   href={item.href}
                   aria-current={isCurrent(item.href) ? "page" : undefined}
                   className={cn(
-                    "relative px-3 py-2 text-sm text-jh-navy/75 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright",
+                    "relative block whitespace-nowrap px-2.5 py-2 text-sm text-jh-navy/75 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright",
                     "after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-jh-navy after:transition-transform after:duration-300 hover:after:scale-x-100",
                     isCurrent(item.href) && "text-jh-navy after:scale-x-100",
                   )}
@@ -84,7 +84,7 @@ export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?
           href="/contact"
           aria-current={isCurrent("/contact") ? "page" : undefined}
           className={cn(
-            "hidden px-3 py-2 text-sm text-jh-navy/75 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright md:inline-flex",
+            "hidden whitespace-nowrap px-2.5 py-2 text-sm text-jh-navy/75 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright lg:inline-flex",
             isCurrent("/contact") && "font-semibold text-jh-navy",
           )}
         >
@@ -92,17 +92,17 @@ export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?
         </Link>
         <Link
           href="/#quick-rfq"
-          className="hidden h-10 items-center gap-1.5 rounded-lg bg-jh-navy px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-jh-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jh-bright xl:inline-flex"
+          className="hidden h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-jh-navy px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-jh-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jh-bright xl:inline-flex"
         >
           <FileText aria-hidden className="size-4" />
           Request bulk quote
         </Link>
-        <div className="ml-auto flex items-center md:ml-0">{account}</div>
+        <div className="ml-auto flex items-center lg:ml-0">{account}</div>
 
         <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
           <SheetTrigger
             aria-label="Open menu"
-            className="flex size-11 items-center justify-center rounded-full text-jh-navy hover:bg-muted focus-visible:outline-2 focus-visible:outline-jh-bright md:hidden"
+            className="flex size-11 items-center justify-center rounded-full text-jh-navy hover:bg-muted focus-visible:outline-2 focus-visible:outline-jh-bright lg:hidden"
           >
             <Menu aria-hidden className="size-6" />
           </SheetTrigger>

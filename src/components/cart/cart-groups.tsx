@@ -16,16 +16,16 @@ export function CartGroups({ cart, editable = true }: { cart: Cart; editable?: b
   return (
     <ul className="flex flex-col gap-6">
       {groupByProduct(cart).map(({ product, lines }) => (
-        <li key={product.productId} className="rounded-3xl bg-white p-5 ring-1 ring-border sm:p-6">
+        <li key={product.productId} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-border transition-shadow hover:shadow-md sm:p-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 className="text-xl font-semibold">
+            <h2 className="text-xl font-semibold text-jh-navy">
               <Link href={`/shop/p/${lines[0].productSlug}`} className="hover:text-jh-deep hover:underline">
                 {product.productName}
               </Link>
             </h2>
             <span
               className={cn(
-                "rounded-sm px-3 py-1 text-xs font-semibold",
+                "rounded-full px-3 py-1 text-xs font-bold",
                 product.tier === "bulk" ? "bg-jh-bright/20 text-jh-deep" : "bg-jh-light text-jh-navy",
               )}
             >
@@ -39,7 +39,7 @@ export function CartGroups({ cart, editable = true }: { cart: Cart; editable?: b
               const lead = leadTimeNote(line);
               return (
                 <li key={line.id} className="flex gap-4 py-4 first:pt-0 last:pb-0">
-                  <div className="relative size-20 shrink-0 overflow-hidden rounded-2xl bg-jh-light">
+                  <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-jh-light sm:h-28 sm:w-24">
                     {line.image ? (
                       <Image src={line.image.thumbnail} alt="" fill unoptimized sizes="80px" className="object-cover" />
                     ) : (
@@ -48,12 +48,27 @@ export function CartGroups({ cart, editable = true }: { cart: Cart; editable?: b
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-                      <p className="font-medium">{line.variantLabel}</p>
-                      <p className="font-semibold tabular-nums">{rupees(line.lineTotal)}</p>
+                      <p className="font-semibold text-jh-navy">{line.variantLabel}</p>
+                      <p className="text-lg font-bold text-jh-navy tabular-nums">{rupees(line.lineTotal)}</p>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {rupees(line.unitPrice)} per {line.unitLabel} · <span className="font-mono text-xs">{line.sku}</span>
-                    </p>
+                    <dl className="mt-2 flex flex-wrap gap-2 text-sm">
+                      <div className="rounded-md bg-jh-light/70 px-2.5 py-1">
+                        <dt className="text-[0.7rem] tracking-wider text-muted-foreground uppercase">Price</dt>
+                        <dd className="font-semibold text-jh-navy tabular-nums">
+                          {rupees(line.unitPrice)} per {line.unitLabel}
+                        </dd>
+                      </div>
+                      {line.tier !== "bulk" && line.bulkPrice ? (
+                        <div className="rounded-md bg-jh-light/70 px-2.5 py-1">
+                          <dt className="text-[0.7rem] tracking-wider text-muted-foreground uppercase">Bulk price</dt>
+                          <dd className="font-semibold text-jh-deep tabular-nums">{rupees(line.bulkPrice)}</dd>
+                        </div>
+                      ) : null}
+                      <div className="rounded-md bg-jh-light/70 px-2.5 py-1">
+                        <dt className="text-[0.7rem] tracking-wider text-muted-foreground uppercase">Code</dt>
+                        <dd className="font-mono text-xs leading-5 text-jh-navy">{line.sku}</dd>
+                      </div>
+                    </dl>
                     {lead ? (
                       <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
                         <Clock aria-hidden className="size-3.5" /> {lead}
@@ -79,10 +94,10 @@ export function CartGroups({ cart, editable = true }: { cart: Cart; editable?: b
 }
 
 function QuantityForm({ lineId, quantity, label }: { lineId: string; quantity: number; label: string }) {
-  const step = "flex size-10 items-center justify-center rounded-full hover:bg-jh-light focus-visible:outline-2 focus-visible:outline-jh-bright";
+  const step = "flex size-10 items-center justify-center rounded-md hover:bg-white focus-visible:outline-2 focus-visible:outline-jh-bright";
   return (
     <div className="mt-3 flex flex-wrap items-center gap-3">
-      <form action={changeLine} className="flex items-center rounded-full bg-white ring-1 ring-border">
+      <form action={changeLine} className="flex items-center rounded-lg bg-jh-light/70 p-0.5">
         <input type="hidden" name="lineId" value={lineId} />
         <button type="submit" name="quantity" value={quantity - 1} aria-label={`One less ${label}`} className={step}>
           <Minus aria-hidden className="size-4" />
@@ -101,7 +116,7 @@ function QuantityForm({ lineId, quantity, label }: { lineId: string; quantity: n
         <button type="submit" name="quantity" value={quantity + 1} aria-label={`One more ${label}`} className={step}>
           <Plus aria-hidden className="size-4" />
         </button>
-        <button type="submit" className="mr-1 rounded-sm px-3 py-1.5 text-xs font-semibold text-jh-deep hover:bg-jh-light">
+        <button type="submit" className="mr-1 rounded-md px-3 py-1.5 text-xs font-semibold text-jh-deep hover:bg-white">
           Update
         </button>
       </form>

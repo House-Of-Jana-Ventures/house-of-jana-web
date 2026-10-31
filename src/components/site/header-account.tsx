@@ -16,9 +16,9 @@ export async function HeaderAccount() {
   if (!session) {
     return (
       <div className="flex items-center gap-1">
-        <Link href="/sign-in" className={`${ICON} md:w-auto md:gap-1.5 md:px-3 md:text-sm md:font-medium`}>
+        <Link href="/sign-in" className={`${ICON} lg:w-auto lg:gap-1.5 lg:whitespace-nowrap lg:px-3 lg:text-sm lg:font-medium`}>
           <UserRound aria-hidden className="size-5" />
-          <span className="sr-only md:not-sr-only">Sign in</span>
+          <span className="sr-only lg:not-sr-only">Sign in</span>
         </Link>
       </div>
     );
@@ -30,9 +30,9 @@ export async function HeaderAccount() {
         <summary
           role="button"
           aria-label={`Account menu${session.firstName ? ` for ${session.firstName}` : ""}`}
-          className={`${ICON} cursor-pointer list-none md:w-auto md:gap-1.5 md:px-3 md:text-sm md:font-medium [&::-webkit-details-marker]:hidden`}>
+          className={`${ICON} cursor-pointer list-none lg:w-auto lg:gap-1.5 lg:whitespace-nowrap lg:px-3 lg:text-sm lg:font-medium [&::-webkit-details-marker]:hidden`}>
           <UserRound aria-hidden className="size-5" />
-          <span aria-hidden className="hidden md:inline">{session.firstName || "Account"}</span>
+          <span aria-hidden className="hidden lg:inline">{session.firstName || "Account"}</span>
         </summary>
         <div className="absolute right-0 z-40 mt-2 w-52 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-border">
           <p className="px-3 py-2 text-xs text-muted-foreground">Signed in{session.firstName ? ` as ${session.firstName}` : ""}</p>

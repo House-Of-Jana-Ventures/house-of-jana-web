@@ -32,7 +32,7 @@ export function AnnouncementBar() {
           <li key={text}>{text}</li>
         ))}
       </ul>
-      <div className="mx-auto flex h-9 max-w-6xl items-center justify-between gap-4 px-4 text-[0.72rem] font-semibold sm:px-6">
+      <div className="mx-auto flex h-9 max-w-7xl items-center justify-between gap-4 px-4 text-[0.72rem] font-semibold sm:px-6">
         {/* Phones: one at a time. */}
         <div aria-hidden className="relative h-full flex-1 md:hidden">
           {announcements.map((text, i) => {
@@ -56,7 +56,7 @@ export function AnnouncementBar() {
           {announcements.map((text, i) => {
             const Icon = ICONS[i % ICONS.length];
             return (
-              <span key={text} className={cn("items-center gap-1.5", i === 2 ? "hidden xl:flex" : "flex")}>
+              <span key={text} className={cn("items-center gap-1.5 whitespace-nowrap", i === 0 ? "flex" : i === 1 ? "hidden lg:flex" : "hidden xl:flex")}>
                 {i > 0 ? <span className="mr-2.5 text-white/30">|</span> : null}
                 <Icon aria-hidden className="size-3.5 text-jh-bright" />
                 {text}
@@ -66,10 +66,11 @@ export function AnnouncementBar() {
         </p>
         <a
           href={telHref(site.phones[0])}
-          className="hidden shrink-0 items-center gap-1.5 text-jh-bright hover:underline md:flex"
+          className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-jh-bright hover:underline"
+          aria-label={`Call us: ${site.phones[0]}`}
         >
           <Phone aria-hidden className="size-3.5" />
-          Call us: {site.phones[0]}
+          <span aria-hidden className="hidden sm:inline">Call us: {site.phones[0]}</span>
         </a>
       </div>
     </div>
