@@ -39,3 +39,11 @@
 
 - Push and deploy (waiting for the owner)
 - The design's search box, currency switch (the shop is in ₹ only) and "Download spec sheet (PDF)" (no PDF exists) were left out
+
+## About page (2026-10-31, same day)
+
+The owner pasted a second design, for the About page, and asked to make it simpler. Built in the same style with real content only: a navy opening with four true facts (5 decades, 4 continents, temple hair, made in Midnapore), the family story with the founders and the mission, what we do (five cards), the CEO's words, the warehouse and corporate office, and an invitation to work with us (real phone and email, confirmed promises).
+
+Left out of the design as unverified or invented: "Est. 1974", "38+ nations", "100% Remy", "0% acid bath", named temples, the 1974–2026 timeline, ISO / MSME / export-unit badges, three named artisans and their quotes, a founders' quote, factory size and capacity figures, the comparison with "industrial hair", a Debra address and a placeholder phone and email. Any of these can be added once the owner confirms the facts.
+
+Checks: types, lint; `npm run test:e2e` 38 passed (including the accessibility check on /about); screenshots at 1440 px and 390 px.
