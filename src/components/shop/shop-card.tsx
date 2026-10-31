@@ -1,20 +1,29 @@
-import { ImageOff } from "lucide-react";
+import { ArrowRight, ImageOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { rupees } from "@/lib/shop/prices";
+import { bulkSaving, rupees } from "@/lib/shop/prices";
 import type { ProductCard } from "@/lib/shop/types";
+import { cn } from "@/lib/utils";
+
+/** "from ₹5,200" when the price varies by option, else "₹5,200". */
+function priceText(range: { min: string; max: string }): string {
+  return `${range.min === range.max ? "" : "from "}${rupees(range.min)}`;
+}
 
 /**
- * A product in a listing: a square photo on white, then the name, both price
- * ranges and the unit underneath, with no card around it (phase J3).
+ * A product in a listing (owner's design, phase J4): a photo with badges, the
+ * name, and a small price table with the single price below the product's
+ * bulk minimum and the bulk price from it.
  */
 export function ShopCard({ product }: { product: ProductCard }) {
+  const saving = bulkSaving(product.prices.single.min, product.prices.bulk.min);
+  const min = product.bulkMinQty;
   return (
     <Link
       href={`/shop/p/${product.slug}`}
-      className="group flex h-full flex-col focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-jh-bright"
+      className="group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-border transition-all duration-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jh-bright"
     >
-      <span className="relative block aspect-square overflow-hidden rounded-sm bg-white ring-1 ring-border">
+      <span className="relative block aspect-[4/5] overflow-hidden bg-jh-light">
         {product.image ? (
           // The API already serves resized WebP copies.
           <Image
@@ -22,47 +31,59 @@ export function ShopCard({ product }: { product: ProductCard }) {
             alt={product.imageAlt ?? ""}
             fill
             unoptimized
-            sizes="(min-width: 1024px) 25vw, 45vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+            sizes="(min-width: 1280px) 22vw, (min-width: 768px) 40vw, 90vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <span className="flex size-full items-center justify-center text-muted-foreground">
             <ImageOff aria-hidden className="size-8" />
           </span>
         )}
-        {!product.available ? (
-          <span className="absolute top-3 left-3 rounded-sm bg-white px-2.5 py-1 text-[0.65rem] font-semibold tracking-[0.12em] text-jh-navy uppercase ring-1 ring-border">
-            Sold out for now
-          </span>
-        ) : null}
-      </span>
-      <span className="flex flex-1 flex-col pt-4">
-        <span className="font-heading text-2xl font-medium group-hover:text-jh-deep">{product.name}</span>
-        {product.shortDescription ? (
-          <span className="mt-1 line-clamp-2 text-sm text-muted-foreground">{product.shortDescription}</span>
-        ) : null}
-        <span className="mt-auto pt-3">
-          <span className="block text-sm text-muted-foreground">Bulk, {product.bulkMinQty}+ per {product.unitLabel}</span>
-          <span className="block text-base font-semibold text-jh-navy">
-            {product.prices.bulk.min === product.prices.bulk.max ? "" : "from "}
-            {rupees(product.prices.bulk.min)}
-          </span>
-          {/* Below the product's own bulk minimum (e.g. 1–9 when bulk starts at 10). */}
-          {product.bulkMinQty > 1 ? (
-            <span className="block text-sm text-muted-foreground">
-              {product.bulkMinQty > 2 ? `1–${product.bulkMinQty - 1}` : "1"}:{" "}
-              {product.prices.single.min === product.prices.single.max ? "" : "from "}
-              {rupees(product.prices.single.min)}
+        <span className="absolute top-3 left-3 flex flex-col items-start gap-1.5">
+          {saving > 0 ? (
+            <span className="rounded-md bg-jh-navy px-2.5 py-1 text-[0.7rem] font-bold text-white shadow-sm">
+              Save {saving}% in bulk
             </span>
           ) : null}
+          {!product.available ? (
+            <span className="rounded-md bg-white px-2.5 py-1 text-[0.7rem] font-bold text-jh-navy shadow-sm">Sold out for now</span>
+          ) : null}
+        </span>
+      </span>
+      <span className="flex flex-1 flex-col gap-3 p-4">
+        <span>
+          <span className="block font-sans text-lg font-bold text-jh-navy transition-colors group-hover:text-jh-deep">{product.name}</span>
+          {product.shortDescription ? (
+            <span className="mt-1 line-clamp-2 block text-sm text-muted-foreground">{product.shortDescription}</span>
+          ) : null}
+        </span>
+        <span className="mt-auto flex flex-col gap-1 rounded-lg bg-jh-light p-3 text-sm">
+          {min > 1 ? (
+            <span className="flex items-baseline justify-between gap-2">
+              <span className="text-muted-foreground">{min > 2 ? `1–${min - 1}` : "1"} pieces:</span>
+              <span className="font-semibold whitespace-nowrap text-jh-navy">{priceText(product.prices.single)}</span>
+            </span>
+          ) : null}
+          <span className="flex items-baseline justify-between gap-2">
+            <span className="font-bold text-jh-deep">Bulk, {min}+ pieces:</span>
+            <span className="text-base font-bold whitespace-nowrap text-jh-deep">{priceText(product.prices.bulk)}</span>
+          </span>
+          <span className="text-xs text-muted-foreground">per {product.unitLabel}, GST included</span>
+        </span>
+        <span className="flex items-center justify-center gap-1.5 rounded-lg bg-jh-navy py-2.5 text-sm font-semibold text-white transition-colors group-hover:bg-jh-deep">
+          Choose length &amp; order
+          <ArrowRight aria-hidden className="size-4" />
         </span>
       </span>
     </Link>
   );
 }
 
-export function ShopGrid({ children }: { children: React.ReactNode }) {
-  return <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">{children}</ul>;
+/** The product cards: `wide` fits four across (the home page), else three beside the filters. */
+export function ShopGrid({ children, wide = false }: { children: React.ReactNode; wide?: boolean }) {
+  return (
+    <ul className={cn("grid gap-5 sm:grid-cols-2", wide ? "mt-10 lg:grid-cols-4" : "xl:grid-cols-3")}>{children}</ul>
+  );
 }
 
 /** Shown when the shop's data can't be read right now. */

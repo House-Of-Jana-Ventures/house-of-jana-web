@@ -35,7 +35,7 @@ test("Bulk hair sells at the bulk price from 10 pieces: card, product page and c
     await expect(page.getByRole("link", { name: /Bulk hair/ }).filter({ hasText: "Bulk, 10+" })).toBeVisible({ timeout: 1_000 });
   });
   // The card's small-quantity line follows the product's own minimum.
-  await expect(page.getByRole("link", { name: /Bulk hair/ }).filter({ hasText: "Bulk, 10+" })).toContainText("1–9:");
+  await expect(page.getByRole("link", { name: /Bulk hair/ }).filter({ hasText: "Bulk, 10+" })).toContainText("1–9 pieces:");
   await expect(page.getByText("one price for small quantities, and a lower bulk price from a set number of pieces")).toBeVisible();
 
   await page.goto("/register");

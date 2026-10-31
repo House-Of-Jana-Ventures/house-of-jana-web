@@ -24,7 +24,7 @@ export async function BestSellers() {
             Shop all
           </Link>
         </div>
-        <ShopGrid>
+        <ShopGrid wide>
           {items.map((product) => (
             <li key={product.id}>
               <ShopCard product={product} />

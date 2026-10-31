@@ -31,12 +31,13 @@ test("the shop and a category show cards with both prices", async ({ page }) => 
   await page.goto("/shop");
   const card = page.getByRole("link", { name: /Bulk hair/ }).filter({ hasText: "Bulk, 25+" });
   await expect(card).toContainText("from ₹5,200");
-  await expect(card).toContainText("1–24: from ₹6,000");
+  await expect(card).toContainText("1–24 pieces:from ₹6,000");
   await expect(card).toContainText("per bundle (100 g)");
   // Drafts never appear.
   await expect(page.getByText("K-Tip")).toHaveCount(0);
 
-  await page.getByRole("link", { name: "See all hair extensions" }).click();
+  // The categories sit beside the products, with how many each has.
+  await page.getByRole("navigation", { name: "Categories" }).getByRole("link", { name: /^Hair extensions/ }).click();
   await expect(page).toHaveURL(/\/shop\/hair-extensions$/);
   await expect(page.getByRole("status").filter({ hasText: "product" })).toHaveText("1 product");
 });
