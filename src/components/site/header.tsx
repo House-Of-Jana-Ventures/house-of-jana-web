@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { useContact } from "@/components/contact/contact-context";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { nav } from "@/content/site";
 import type { MenuCategory } from "@/lib/shop/types";
@@ -21,7 +20,6 @@ import { ProductsMenu } from "./products-menu";
  */
 export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?: ReactNode }) {
   const pathname = usePathname();
-  const { openContact } = useContact();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -82,14 +80,16 @@ export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?
             ))}
           </ul>
         </nav>
-        <button
-          type="button"
-          onClick={() => openContact()}
-          aria-haspopup="dialog"
-          className="hidden px-3 py-2 text-sm text-jh-navy/75 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright md:inline-flex"
+        <Link
+          href="/contact"
+          aria-current={isCurrent("/contact") ? "page" : undefined}
+          className={cn(
+            "hidden px-3 py-2 text-sm text-jh-navy/75 transition-colors hover:text-jh-navy focus-visible:outline-2 focus-visible:outline-jh-bright md:inline-flex",
+            isCurrent("/contact") && "font-semibold text-jh-navy",
+          )}
         >
           Contact us
-        </button>
+        </Link>
         <Link
           href="/#quick-rfq"
           className="hidden h-10 items-center gap-1.5 rounded-lg bg-jh-navy px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-jh-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jh-bright xl:inline-flex"
@@ -151,16 +151,9 @@ export function Header({ menu = [], account }: { menu?: MenuCategory[]; account?
                 ))}
               </ul>
             </nav>
-            <button
-              type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                openContact();
-              }}
-              className="btn-line mt-4 w-full text-jh-navy"
-            >
+            <Link href="/contact" onClick={() => setMenuOpen(false)} className="btn-line mt-4 w-full text-center text-jh-navy">
               Contact us
-            </button>
+            </Link>
           </SheetContent>
         </Sheet>
       </div>

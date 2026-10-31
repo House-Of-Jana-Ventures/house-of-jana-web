@@ -4,6 +4,7 @@ import { expect, test, type Page } from "@playwright/test";
 const PAGES = [
   { path: "/", heading: "Crafted for a Natural Finish" },
   { path: "/about", heading: "About Jana Human Hair" },
+  { path: "/contact", heading: "Contact Jana Human Hair" },
 ];
 
 const contactButton = (page: Page) => page.getByRole("button", { name: "Contact us" }).last();
@@ -100,10 +101,13 @@ test("the bulk quote form checks, then sends the choices to the inbox and thanks
   await expect(desk.getByRole("status")).toContainText("reply within 2 hours");
 });
 
-test("old WordPress addresses redirect; /contact opens the form", async ({ page }) => {
-  await page.goto("/contact");
-  await expect(page).toHaveURL(/\/\?contact=?$/);
+test("old WordPress addresses redirect; /?contact opens the form; /contact is the contact page", async ({ page }) => {
+  await page.goto("/?contact");
   await expect(dialog(page)).toBeVisible();
+  await page.goto("/contact");
+  await expect(page.getByRole("heading", { level: 1, name: "Contact Jana Human Hair" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Chat on WhatsApp" })).toHaveAttribute("href", /wa\.me/);
+  await expect(page.getByRole("button", { name: "Send my quote request" })).toBeVisible();
   for (const old of ["/thankyou", "/0xf8d554fb/", "/tag/0xf8d554fb/"]) {
     await page.goto(old);
     await expect(page.getByRole("heading", { level: 1, name: PAGES[0].heading })).toBeVisible();

@@ -80,7 +80,9 @@ export async function Footer() {
 
           <Column title="Help">
             <li>
-              <ContactTrigger className={`${LINK} text-left`}>Contact us</ContactTrigger>
+              <Link href="/contact" className={LINK}>
+                Contact us
+              </Link>
             </li>
             <li>
               <ContactTrigger topic="bulk orders" className={`${LINK} text-left`}>

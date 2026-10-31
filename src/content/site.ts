@@ -37,7 +37,7 @@ export const announcements = [
 ] as const;
 
 /**
- * The main menu. "Contact" opens the contact form (there's no Contact page).
+ * The main menu ("Contact us" sits beside it, linking to /contact).
  * Links with # go to a section of the home page; `wide` ones show from
  * large screens up (and always in the phone menu).
  */
