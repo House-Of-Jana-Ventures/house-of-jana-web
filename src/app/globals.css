@@ -9,7 +9,9 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-display);
+  --font-heading: var(--font-lora);
+  --font-display: "Redaction 10", var(--font-lora), Georgia, serif;
+  --font-label: var(--font-alexandria), var(--font-geist-sans), sans-serif;
   --color-jh-light: var(--jh-light);
   --color-jh-bright: var(--jh-bright);
   --color-jh-deep: var(--jh-deep);
@@ -140,13 +142,68 @@
   }
 }
 
-/* Headings in the display serif. */
+/*
+ * The font mix: page titles in Redaction 10, other headings (and the
+ * serif touches such as quotes) in Lora, reading text in Geist, and
+ * buttons, menus and the small upper-case labels in Alexandria.
+ */
 @layer base {
   h1,
   h2,
   h3 {
     @apply font-heading tracking-tight text-balance;
   }
+  h1 {
+    font-family: var(--font-display);
+    letter-spacing: 0;
+  }
+  button,
+  nav,
+  label,
+  .uppercase {
+    font-family: var(--font-label);
+  }
+  /* Prose inside nav or labels (e.g. long help text) stays in the reading font. */
+  nav p,
+  label p {
+    font-family: var(--font-sans);
+  }
+}
+
+/* Formatted product descriptions: paragraphs, bold, italic, small and big text. */
+.rich-text p {
+  margin: 0 0 0.75em;
+}
+.rich-text p:last-child {
+  margin-bottom: 0;
+}
+.rich-text ul,
+.rich-text ol {
+  margin: 0 0 0.75em;
+  padding-left: 1.4em;
+}
+.rich-text ul {
+  list-style: disc;
+}
+.rich-text ol {
+  list-style: decimal;
+}
+.rich-text li {
+  margin: 0.2em 0;
+}
+.rich-text li p {
+  margin: 0;
+}
+.rich-text strong {
+  font-weight: 700;
+  color: var(--jh-navy);
+}
+.rich-text [data-size="big"] {
+  font-size: 1.25em;
+  line-height: 1.35;
+}
+.rich-text [data-size="small"] {
+  font-size: 0.85em;
 }
 
 /* Smooth in-page scrolling, unless the visitor prefers less motion. */

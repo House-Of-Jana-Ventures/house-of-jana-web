@@ -6,6 +6,7 @@ import { CatalogHeader, CatalogSidebar, PricesBand, SamplesBand, WhyJana } from 
 import { Section } from "@/components/site/section";
 import { ShopCard, ShopGrid, ShopUnavailable } from "@/components/shop/shop-card";
 import { findCategory, getFilters, getMenu, getProducts, getShopRules } from "@/lib/shop/api";
+import { categoryTrail } from "@/lib/shop/categories";
 import { formatSelected, listingHref, parseSelected, toggle } from "@/lib/shop/filters";
 import { cn } from "@/lib/utils";
 
@@ -63,6 +64,7 @@ async function CategoryContent({ params, searchParams }: PageProps<"/shop/[categ
     getShopRules(),
   ]);
   const path = `/shop/${category.slug}`;
+  const above = (categoryTrail(menu, category.slug) ?? []).slice(0, -1);
   const anyFilter = Object.keys(selected).length > 0 || available;
   const chosen = Object.entries(selected).flatMap(([name, values]) => values.map((value) => ({ name, value })));
   const pageHref = (n: number) => `${listingHref(path, selected, available)}${anyFilter ? "&" : "?"}page=${n}`;
@@ -81,6 +83,14 @@ async function CategoryContent({ params, searchParams }: PageProps<"/shop/[categ
             <Link href="/shop" className="hover:text-jh-deep hover:underline">
               Shop
             </Link>{" "}
+            {above.map((parent) => (
+              <span key={parent.id}>
+                /{" "}
+                <Link href={`/shop/${parent.slug}`} className="hover:text-jh-deep hover:underline">
+                  {parent.name}
+                </Link>{" "}
+              </span>
+            ))}
             / <span aria-current="page">{category.name}</span>
           </nav>
         }
@@ -138,6 +148,19 @@ async function CategoryContent({ params, searchParams }: PageProps<"/shop/[categ
               <ShopUnavailable />
             ) : (
               <>
+                {category.children.length > 0 ? (
+                  <nav aria-label={`Inside ${category.name}`} className="flex flex-wrap gap-2">
+                    {category.children.map((child) => (
+                      <Link
+                        key={child.id}
+                        href={`/shop/${child.slug}`}
+                        className="rounded-full bg-white px-3.5 py-1.5 text-sm font-semibold text-jh-navy shadow-sm ring-1 ring-border hover:bg-jh-light"
+                      >
+                        {child.name} <span className="font-normal text-muted-foreground">{child.productCount}</span>
+                      </Link>
+                    ))}
+                  </nav>
+                ) : null}
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex flex-wrap items-center gap-2 text-sm">
                     {chosen.length > 0 || available ? <span className="text-muted-foreground">Chosen:</span> : null}

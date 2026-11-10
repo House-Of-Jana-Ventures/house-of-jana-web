@@ -1,6 +1,7 @@
 import { ArrowRight, Factory, FileText, Layers, Package, Palette, Percent, Sparkles, SlidersHorizontal, Tag } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { categoryTrail } from "@/lib/shop/categories";
 import type { MenuCategory } from "@/lib/shop/types";
 import { cn } from "@/lib/utils";
 
@@ -105,6 +106,8 @@ export function CatalogSidebar({
       "flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-jh-light",
       active && "bg-jh-light font-semibold text-jh-navy",
     );
+  // The categories on the way to the one being viewed show their sub-categories.
+  const open = new Set((current ? categoryTrail(menu, current) ?? [] : []).map((c) => c.id));
   return (
     <aside className="flex flex-col gap-5 lg:col-span-3">
       <div className="flex flex-col gap-4 rounded-xl bg-white p-4 shadow-sm ring-1 ring-border">
@@ -120,18 +123,7 @@ export function CatalogSidebar({
                 All products
               </Link>
             </li>
-            {menu.map((category) => (
-              <li key={category.id}>
-                <Link
-                  href={`/shop/${category.slug}`}
-                  aria-current={current === category.slug ? "page" : undefined}
-                  className={link(current === category.slug)}
-                >
-                  {category.name}
-                  <span className="text-xs text-muted-foreground">{category.productCount}</span>
-                </Link>
-              </li>
-            ))}
+            <CategoryBranch categories={menu} current={current} open={open} link={link} />
           </ul>
         </nav>
         {children}
@@ -148,6 +140,41 @@ export function CatalogSidebar({
         </Link>
       </div>
     </aside>
+  );
+}
+
+/** One level of the categories list; open branches show the level below, indented. */
+function CategoryBranch({
+  categories,
+  current,
+  open,
+  link,
+}: {
+  categories: MenuCategory[];
+  current: string | null;
+  open: Set<string>;
+  link: (active: boolean) => string;
+}) {
+  return (
+    <>
+      {categories.map((category) => (
+        <li key={category.id}>
+          <Link
+            href={`/shop/${category.slug}`}
+            aria-current={current === category.slug ? "page" : undefined}
+            className={link(current === category.slug)}
+          >
+            {category.name}
+            <span className="text-xs text-muted-foreground">{category.productCount}</span>
+          </Link>
+          {open.has(category.id) && category.children.length > 0 ? (
+            <ul className="mt-0.5 ml-3 flex flex-col gap-0.5 border-l border-border pl-2">
+              <CategoryBranch categories={category.children} current={current} open={open} link={link} />
+            </ul>
+          ) : null}
+        </li>
+      ))}
+    </>
   );
 }
 

@@ -7,6 +7,7 @@ import { ShopUnavailable } from "@/components/shop/shop-card";
 import { ProductView } from "@/components/shop/product-view";
 import { site } from "@/content/site";
 import { getProduct } from "@/lib/shop/api";
+import { richTextToPlain } from "@/lib/shop/rich-text";
 import type { ShopProduct } from "@/lib/shop/types";
 
 export async function generateMetadata({ params }: PageProps<"/shop/p/[product]">): Promise<Metadata> {
@@ -18,10 +19,17 @@ export async function generateMetadata({ params }: PageProps<"/shop/p/[product]"
     title: `${product.name} | Shop`,
     description:
       product.shortDescription ??
+      (product.description ? summary(product.description) : null) ??
       `${product.name} from Jana Human Hair, per ${product.unitLabel}: bulk prices from ${product.bulkMinQty} pieces.`,
     alternates: { canonical: `/shop/p/${product.slug}` },
     openGraph: image ? { images: [{ url: image }] } : undefined,
   };
+}
+
+/** The description's first words, for search results (about 160 characters). */
+function summary(description: string): string {
+  const plain = richTextToPlain(description).replace(/\s+/g, " ");
+  return plain.length > 160 ? `${plain.slice(0, 157).replace(/\s+\S*$/, "")}…` : plain;
 }
 
 export default function ProductPage(props: PageProps<"/shop/p/[product]">) {
@@ -39,7 +47,7 @@ function productJsonLd(product: ShopProduct) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.shortDescription ?? product.description ?? undefined,
+    description: product.shortDescription ?? (product.description ? richTextToPlain(product.description) : undefined),
     image: product.images.map((i) => i.urls.large),
     brand: { "@type": "Brand", name: site.name },
     offers: {

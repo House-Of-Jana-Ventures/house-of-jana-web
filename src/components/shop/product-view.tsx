@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { addToCart, loadCart } from "@/lib/cart/actions";
 import type { Cart } from "@/lib/cart/types";
 import { bulkSaving, clampQuantity, quote, rupees, startingQuantity } from "@/lib/shop/prices";
+import { isRichText, sanitizeRichText } from "@/lib/shop/rich-text";
 import type { ShopProduct, ShopVariant } from "@/lib/shop/types";
 import { choose, findVariant, startingChoice, valueState } from "@/lib/shop/variants";
 import { cn } from "@/lib/utils";
@@ -267,7 +268,15 @@ export function ProductView({ product }: { product: ShopProduct }) {
             <h2 id="about-heading" className="text-2xl font-semibold">
               About this product
             </h2>
-            <p className="mt-3 leading-relaxed whitespace-pre-line text-muted-foreground">{product.description}</p>
+            {isRichText(product.description) ? (
+              <div
+                className="rich-text mt-3 leading-relaxed text-muted-foreground"
+                // Cleaned to bold, italic, sizes, paragraphs and breaks (lib/shop/rich-text).
+                dangerouslySetInnerHTML={{ __html: sanitizeRichText(product.description) ?? "" }}
+              />
+            ) : (
+              <p className="mt-3 leading-relaxed whitespace-pre-line text-muted-foreground">{product.description}</p>
+            )}
           </section>
         ) : null}
         {Object.keys(product.attributes).length > 0 ? (

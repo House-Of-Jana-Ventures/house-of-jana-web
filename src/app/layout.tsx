@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Alexandria, Geist, Lora } from "next/font/google";
 import { Suspense } from "react";
 import { ContactProvider } from "@/components/contact/contact-context";
 import { ContactWidget } from "@/components/contact/contact-widget";
@@ -7,16 +7,19 @@ import { AnnouncementBar } from "@/components/site/announcement-bar";
 import { Footer } from "@/components/site/footer";
 import { HeaderFallback, SiteHeader } from "@/components/site/site-header";
 import { site } from "@/content/site";
+// Redaction 10 (page titles) is self-hosted from @fontsource; the others come from Google Fonts.
+import "@fontsource/redaction-10/latin-400.css";
+import "@fontsource/redaction-10/latin-700.css";
 import "./globals.css";
 
-// The owner's design (phase J4): Plus Jakarta Sans for text, Playfair Display for headings.
-const sans = Plus_Jakarta_Sans({ variable: "--font-geist-sans", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
-const display = Playfair_Display({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
+/**
+ * The owner's font mix (2026-11): Redaction 10 for page titles, Lora for
+ * section headings and quotes, Geist for reading text, and Alexandria for
+ * buttons, menus and small labels.
+ */
+const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const serif = Lora({ variable: "--font-lora", subsets: ["latin"], style: ["normal", "italic"] });
+const label = Alexandria({ variable: "--font-alexandria", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -66,7 +69,7 @@ const organization = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-IN" className={`${sans.variable} ${display.variable} h-full antialiased`}>
+    <html lang="en-IN" className={`${sans.variable} ${serif.variable} ${label.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         {/* Without JavaScript, nothing waits for an animation to appear. */}
         <noscript>

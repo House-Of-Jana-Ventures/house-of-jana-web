@@ -1,5 +1,6 @@
 import "server-only";
 import { cacheLife } from "next/cache";
+import { categoryTrail } from "./categories";
 import type { FilterOptions, MenuCategory, Page, ProductCard, ShopProduct } from "./types";
 
 /**
@@ -105,12 +106,7 @@ export async function getProduct(slug: string): Promise<ShopProduct | "missing" 
   return result.status === 404 ? "missing" : "unavailable";
 }
 
-/** Finds a category (top level or inside one) in the menu. */
+/** Finds a category at any level (three at most) in the menu. */
 export function findCategory(menu: MenuCategory[] | null, slug: string): MenuCategory | null {
-  for (const top of menu ?? []) {
-    if (top.slug === slug) return top;
-    const child = top.children.find((c) => c.slug === slug);
-    if (child) return child;
-  }
-  return null;
+  return categoryTrail(menu, slug)?.at(-1) ?? null;
 }

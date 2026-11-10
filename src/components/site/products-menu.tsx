@@ -2,6 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { productsUnder } from "@/lib/shop/categories";
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import type { MenuCategory } from "@/lib/shop/types";
 import { cn } from "@/lib/utils";
@@ -98,7 +99,7 @@ export function ProductsMenu({ menu, current }: { menu: MenuCategory[]; current:
                     {category.name}
                   </Link>
                   <ul className="mt-2 flex flex-col">
-                    {[...category.products, ...category.children.flatMap((c) => c.products)].map((product) => (
+                    {productsUnder(category).map((product) => (
                       <li key={product.slug}>
                         <Link
                           href={`/shop/p/${product.slug}`}
