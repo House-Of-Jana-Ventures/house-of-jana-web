@@ -16,9 +16,9 @@ npm run dev                 # http://localhost:3000
 
 | Setting              | Meaning                                                                                                       |
 | -------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `GMAIL_USER`         | The Gmail account that sends the contact-form emails. `jweindia@gmail.com`.                                   |
+| `GMAIL_USER`         | The Gmail account that sends the contact-form emails. `janahumanhair@gmail.com`.                                   |
 | `GMAIL_APP_PASSWORD` | A Google app password for that account. Without it, development only logs enquiries; production refuses. |
-| `CONTACT_TO`         | Where enquiries go. Default `jweindia@gmail.com`.                                                             |
+| `CONTACT_TO`         | Where enquiries go. Default `janahumanhair@gmail.com`.                                                             |
 
 ## Scripts
 

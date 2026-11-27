@@ -36,9 +36,9 @@ test("every page has its heading, the menu and the footer details", async ({ pag
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
     await expect(page.getByRole("navigation", { name: "Main" }).first()).toBeVisible();
     const footer = page.getByRole("contentinfo");
-    await expect(footer.getByRole("link", { name: "jweindia@gmail.com" })).toHaveAttribute(
+    await expect(footer.getByRole("link", { name: "janahumanhair@gmail.com" })).toHaveAttribute(
       "href",
-      "mailto:jweindia@gmail.com",
+      "mailto:janahumanhair@gmail.com",
     );
     await expect(footer.getByRole("link", { name: "+91 80176 79521" })).toHaveAttribute(
       "href",
@@ -274,7 +274,7 @@ test("required fields are starred, and WhatsApp is offered as another way", asyn
     await expect(form.locator("label", { hasText: label }).locator("span", { hasText: "*" })).toBeVisible();
   }
   const whatsapp = form.getByRole("link", { name: /Chat with us on WhatsApp/ });
-  await expect(whatsapp).toHaveAttribute("href", "https://wa.me/message/5EXU5MQ2N5Y3B1");
+  await expect(whatsapp).toHaveAttribute("href", "https://wa.me/message/IASCSFPAAMA6J1");
   await expect(whatsapp).toHaveAttribute("target", "_blank");
 });
 

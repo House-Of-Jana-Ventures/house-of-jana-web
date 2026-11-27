@@ -9,10 +9,10 @@ export const site = {
   url: "https://janahumanhair.com",
   description:
     "Jana Human Hair, a unit of House of Jana Ventures Pvt. Ltd., manufactures and exports natural human hair from West Bengal: Non-Remy double drawn, Virgin Remy single drawn, wefts, extensions and wigs.",
-  email: "jweindia@gmail.com",
+  email: "janahumanhair@gmail.com",
   phones: ["+91 80176 79521", "+91 82829 06789"],
   /** Opens a WhatsApp chat with the business. */
-  whatsapp: "https://wa.me/message/5EXU5MQ2N5Y3B1",
+  whatsapp: "https://wa.me/message/IASCSFPAAMA6J1",
   addresses: [
     {
       label: "Warehouse",
