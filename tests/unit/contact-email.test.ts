@@ -52,7 +52,7 @@ describe("the thank-you email to the visitor", () => {
   });
 
   it("includes a copy of what they sent and how to reach us", () => {
-    for (const value of ["mei@example.com", "+86 138 0013 8000", "Silk Hair Co.", "Length: 20 inch.", "+91 80176 79521", "jweindia@gmail.com"]) {
+    for (const value of ["mei@example.com", "+86 138 0013 8000", "Silk Hair Co.", "Length: 20 inch.", "+91 80176 79521", "janahumanhair@gmail.com"]) {
       expect(email.text).toContain(value);
     }
     expect(email.html).toContain("What you sent us");
